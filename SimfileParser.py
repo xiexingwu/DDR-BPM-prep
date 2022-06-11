@@ -178,12 +178,8 @@ class SimfileParser:
                 _min = val
             if val > _max:
                 _max = val
-        for dur, val in zip(durs, vals):
-            if dur < 4 and dur > 2:
-                if val < _min or val > _max:
-                    print(f'Ignored short {val} section in {self.sim_file.title}')
     
-        d['bpm_range'] = f'{_min}~{_max}'
+        d['bpm_range'] = f'{_min}~{_max}' if _min != _max else f'{_min}'
         d['bpms'] = bpms
         return d
 
@@ -207,10 +203,6 @@ class SimfileParser:
             if k > dominant_bpm and (v > 8 or dominant_dur < 13):
                 dominant_bpm = k
                 dominant_dur = v
-                # print(f'higher bpm: {k} section with duration {v:.1f} in {self.sim_file.title}')
-        for k, v in d.items():
-            if k > dominant_bpm and (v > 8 or dominant_dur < 13):
-                print(f'higher bpm: {k} section with duration {v:.1f} in {self.sim_file.title}')
 
         return dominant_bpm, dominant_dur * self.song_length
 
