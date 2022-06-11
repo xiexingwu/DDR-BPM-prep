@@ -1,0 +1,10 @@
+**/.vscode
+**/__pycache__
+
+# Zip files from ZiV
+*.zip
+
+Resources/
+DDR*/
+
+.DS_Store
