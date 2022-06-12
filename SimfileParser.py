@@ -15,6 +15,11 @@ from simfile.timing.engine import TimingEngine
 
 import pdb
 
+FALSE_START_DUR = 2
+SHORT_FAST_BPM_DUR = 4.5
+MIN_DOMINANT_BPM_DUR = 13
+MOST_BPM_DUR = 30
+
 def _sec2beat(sec, bpm):
     return Beat(sec * bpm / 60)
 
@@ -139,7 +144,7 @@ class SimfileParser:
             return
 
         bpm = bpms[0]
-        if bpm['ed'] - bpm['st'] < 1:
+        if bpm['ed'] - bpm['st'] < FALSE_START_DUR:
             bpms[1]['st'] = bpms[0]['st']
             del bpms[0]
             print(f'stripped false start for {self.sim_file.title}')
@@ -172,7 +177,7 @@ class SimfileParser:
         d['true_min'] = _max = min(vals)
         d['true_max'] = _min = max(vals)
         for dur, val in zip(durs, vals):
-            if dur < 4:
+            if dur < SHORT_FAST_BPM_DUR and dominant_dur > MIN_DOMINANT_BPM_DUR:
                 continue
             if val < _min:
                 _min = val
@@ -200,9 +205,9 @@ class SimfileParser:
         dominant_bpm = max(d, key=d.get)
         dominant_dur = d[dominant_bpm]
         for k, v in d.items():
-            if k > dominant_bpm and (v > 8 or dominant_dur < 13):
+            if k > dominant_bpm and (v > MOST_BPM_DUR or dominant_dur < MIN_DOMINANT_BPM_DUR):
                 dominant_bpm = k
                 dominant_dur = v
 
-        return dominant_bpm, dominant_dur * self.song_length
+        return dominant_bpm, dominant_dur
 
