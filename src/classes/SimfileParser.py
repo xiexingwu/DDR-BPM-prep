@@ -1,15 +1,13 @@
-from string import Formatter
+from __init__ import *
 from functools import reduce
-
-from BPMRange import BPMRange
 
 import simfile
 
-from simfile import timing
-from simfile import notes
+# from simfile import timing
+# from simfile import notes
 
-from simfile.notes import NoteData, count
-from simfile.notes.timed import time_notes
+# from simfile.notes import NoteData, count
+# from simfile.notes.timed import time_notes
 from simfile.timing import Beat, TimingData
 from simfile.timing.engine import TimingEngine
 
@@ -147,7 +145,7 @@ class SimfileParser:
         if bpm['ed'] - bpm['st'] < FALSE_START_DUR:
             bpms[1]['st'] = bpms[0]['st']
             del bpms[0]
-            print(f'stripped false start for {self.sim_file.title}')
+            LOGGER.info(f'stripped false start for {self.sim_file.title}')
 
     def cleanBPM(self, bpms):
         new = []
@@ -157,7 +155,7 @@ class SimfileParser:
                 _, _, val2 = bpms[i+1].values()
                 if val2 == val:
                     bpms[i+1]['st'] = st
-                    # print(f'merging {val} section at {st} in {self.sim_file.title}')
+                    # LOGGER.info(f'merging {val} section at {st} in {self.sim_file.title}')
                     continue
 
             new.append(bpms[i])

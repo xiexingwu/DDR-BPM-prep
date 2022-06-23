@@ -1,3 +1,4 @@
+from __init__ import *
 from pathlib import Path
 
 class SimfileRes:

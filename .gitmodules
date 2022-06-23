@@ -1,0 +1,3 @@
+[submodule "DDR-BPM-assets"]
+	path = DDR-BPM-assets
+	url = git@github.com:xiexingwu/DDR-BPM-assets.git

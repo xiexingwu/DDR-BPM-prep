@@ -1,3 +1,5 @@
+from __init__ import *
+
 import json
 
 DIFFICULTY = {
@@ -53,13 +55,14 @@ def readCoursesFile(filename: str, source: str):
 def main():
     d = []
 
-    d += readCoursesFile('ddr_courses.txt', source='DDR')
-    d += readCoursesFile('life4_courses.txt', source='LIFE4')
+    d += readCoursesFile(DDR_COURSES_FILE, source='DDR')
+    d += readCoursesFile(LIFE4_COURSES_FILE, source='LIFE4')
 
-    with open('Resources/courses.json', 'w') as file:
+    with open(str(RES_FOLDER/'courses.json'), 'w') as file:
         json.dump(d, file)
     return d
 
 
 if __name__ == '__main__':
     d = main()
+    
