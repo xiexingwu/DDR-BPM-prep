@@ -1,10 +1,9 @@
 **/.vscode
 **/__pycache__
 
-# Zip files from ZiV
+# Zip files and unzipped directories from ZiV
 *.zip
-
-Resources/
 DDR*/
 
+log/
 .DS_Store
