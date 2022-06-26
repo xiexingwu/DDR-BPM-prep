@@ -19,21 +19,21 @@ def _readJSON(fname):
         d = json.load(file)
     return d
 
-def addResourcesInFolder(data:list[dict], ver_folder:str):
-    folder = Path(ver_folder)
-    # dict containing resources for songs in folder
+def addResources(data:list[dict]):
     with open(ALLSONGS_FILE,'r') as file:
         songs = list(map(lambda line: line.strip(), file))
         
-    for path in folder.glob('*/'):
-        # skip version banner
-        if not path.is_dir():
-            continue
+    for song in songs:
+    # for path in folder.glob('*/'):
+        folders = glob.glob('./DDR*/' + glob.escape(song))
+        if not folders:
+            LOGGER.error(f'{song} not found in files')
+            raise RuntimeError
 
-        if path.name not in songs:
-            LOGGER.debug(f'Skipping {path.name}')
-            continue
+        if len(folders) > 1:
+            LOGGER.warning(f'Duplicates ({len(folders)}): {song}')
 
+        path = Path(folders.pop())
         # save dict
         res = SimfileRes(path)
 
@@ -43,7 +43,7 @@ def addResourcesInFolder(data:list[dict], ver_folder:str):
 
         d = {
             'resources': res.to_dict(),
-            'version': ver_folder, 
+            'version': path.parent.name, 
             'name': res.name
             }
         data.append(d)
@@ -87,8 +87,7 @@ def writeData(data):
 
 def main():
     data = []
-    for ver_folder in VERS_FOLDERS:
-        addResourcesInFolder(data, ver_folder)
+    addResources(data)
     LOGGER.info("Finished reading resources")
 
     addChartData(data)
