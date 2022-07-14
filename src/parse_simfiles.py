@@ -19,7 +19,7 @@ def _readJSON(fname):
         d = json.load(file)
     return d
 
-def addResources(data:list[dict]):
+def loadResources(data:list[dict]):
     with open(ALLSONGS_FILE,'r') as file:
         songs = list(map(lambda line: line.strip(), file))
         
@@ -34,7 +34,7 @@ def addResources(data:list[dict]):
             LOGGER.warning(f'Duplicates ({len(folders)}): {song}')
 
         path = Path(folders.pop())
-        # save dict
+        # path.name should == song
         res = SimfileRes(path)
 
         # skip duplicate title (e.g. La bamba, Happy, ever snow)
@@ -42,9 +42,9 @@ def addResources(data:list[dict]):
             continue
 
         d = {
-            'resources': res.to_dict(),
+            'ssc': res.ssc,
             'version': path.parent.name, 
-            'name': res.name
+            'name': path.name
             }
         data.append(d)
     
@@ -54,22 +54,20 @@ def copyResourcesInFolder(data:list) -> None:
 
     # copy resources, i.e. jackets and simfiles
     for d in data:
-        res = d['resources']
 
-        if res['simfile']:
-            src = Path(d['version']) / Path(res['simfile']).stem / res['simfile']
-            dst = SIMFILES_FOLDER / res['simfile']
-            subprocess.Popen(['cp', '-f', str(src.absolute()), str(dst.absolute()) ])
+        # Copy simfiles
+        src = Path(d['version']) / d['name'] / (d['name'] + (".ssc" if d['ssc'] else ".sm"))
+        dst = SIMFILES_FOLDER / src.name
+        subprocess.Popen(['cp', '-f', str(src.absolute()), str(dst.absolute()) ])
 
-        if res['jacket']:
-            src = Path(d['version']) / Path(res['simfile']).stem / res['jacket']
-            dst = JACKETS_FOLDER/ res['jacket']
-            subprocess.Popen(['cp', '-f', str(src.absolute()), str(dst.absolute()) ])
+        # Copy Jackets
+        src = Path(d['version']) / d['name'] / (d['name'] + "-jacket.png")
+        dst = JACKETS_FOLDER/ src.name
+        subprocess.Popen(['cp', '-f', str(src.absolute()), str(dst.absolute()) ])
 
 def addChartData(data: list) -> None:
     for d in data:
-        res = d['resources']
-        simfile_path = Path(d['version']) / Path(res['simfile']).stem / res['simfile']
+        simfile_path = Path(d['version']) / d['name'] /  (d['name'] + (".ssc" if d['ssc'] else ".sm")) 
         
         # song data
         parser = SimfileParser(simfile_path)
@@ -87,8 +85,8 @@ def writeData(data):
 
 def main():
     data = []
-    addResources(data)
-    LOGGER.info("Finished reading resources")
+    loadResources(data)
+    LOGGER.info("Finished loading resources")
 
     addChartData(data)
     LOGGER.info("Finished processing chart data")
