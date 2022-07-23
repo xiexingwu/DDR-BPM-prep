@@ -1,6 +1,6 @@
 TRIPLET
 -1
-cachacha
+cachaca
 Dancer in the flare
 Windy Fairy
 PERSIAN LAND
