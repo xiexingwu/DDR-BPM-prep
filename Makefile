@@ -7,7 +7,7 @@ main: check_songs
 	python3 src/parse_simfiles.py
 
 # check for duplicates, missing songs, etc.
-check_songs:
+check_songs: clean
 	$(info ###### MAKE SURE all_songs.txt HAS ENDING NEW LINE)
 	$(info ###### MAKE SURE YOU HAVE RUN THE FOLLOWING: make unzip)
 	python src/check_songs.py
@@ -33,3 +33,5 @@ strip:
 		zip -d "$$f.zip" "*.avi" "*.ogg" || [ $$? -eq 12 ]; \
 	done
 
+clean:
+	rm log/*.txt
