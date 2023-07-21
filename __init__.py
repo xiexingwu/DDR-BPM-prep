@@ -1,11 +1,11 @@
 from pathlib import Path
 
-RES_FOLDER = Path('./DDR-BPM-assets')
-DATA_FOLDER = RES_FOLDER/'data'
-JACKETS_FOLDER = RES_FOLDER/'jackets'
-SIMFILES_FOLDER = RES_FOLDER/'simfiles'
+DIST_FOLDER = Path('./DDR-BPM-assets')
+DATA_FOLDER = DIST_FOLDER/'data'
+JACKETS_FOLDER = DIST_FOLDER/'jackets'
+SIMFILES_FOLDER = DIST_FOLDER/'simfiles'
 
-ALLSONGS_FILE = str(RES_FOLDER/'all_songs.txt')
+ALLSONGS_FILE = str(DIST_FOLDER/'all_songs.txt')
 DDR_COURSES_FILE = str('ddr_courses.txt')
 LIFE4_COURSES_FILE = str('life4_courses.txt')
 
