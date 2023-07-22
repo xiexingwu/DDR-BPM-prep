@@ -1,8 +1,6 @@
 from __init__ import *
-from functools import reduce
 
 import simfile
-
 # from simfile import timing
 # from simfile import notes
 
@@ -13,7 +11,9 @@ from simfile.timing.engine import TimingEngine
 
 import pdb
 
-FALSE_START_DUR = 2
+BPM_BUMP_TRIGGER_DIFF = 10
+BPM_BUMP_SMOOTH_DIFF = 3
+BPM_BUMP_DUR = 2
 SHORT_FAST_BPM_DUR = 4.5
 MIN_DOMINANT_BPM_DUR = 13
 MOST_BPM_DUR = 30
@@ -46,25 +46,27 @@ def _printSTOPs(timing_data, timing_eng) -> None:
 
 class SimfileParser:
     def __init__(self, simfile_path):
-        self.sim_file = simfile.open(simfile_path)
-        self.charts = self.sim_file.charts
+        self.simfile = simfile.open(simfile_path)
+        self.charts = self.simfile.charts
         self.per_chart = self.isPerChart()
-
-        self.measures = reduce(lambda x,y:x+y, (c==',' for c in self.charts[0].notes))
+        
+        self.measures = sum(c==',' for c in self.charts[0].notes)
         self.song_length = self.getSongLength()
 
-        t = self.sim_file.title
-        tt = self.sim_file.titletranslit
-        song_d = {
-            'title': t,
-            'titletranslit':  tt if tt else t,
+        self.parseData()
+
+    def parseData(self):
+        title = self.simfile.title
+        title_translit = self.simfile.titletranslit
+
+        self.song_data = {
+            'title': title,
+            'titletranslit':  title_translit or title,
             'song_length': float(_fmt(self.song_length)),
             'per_chart': self.per_chart,
             }
-        self.song_data = song_d
-
         self.levels_data = self.parseLevels()
-        self.chart_data = self.parseTiming()
+        self.chart_data = self.parseCharts()
 
     def isPerChart(self):
         # per_chart if any chart has its own BPM/stops data
@@ -75,7 +77,7 @@ class SimfileParser:
 
     def getSongLength(self):
         chart = self.charts[0]
-        timing_data = TimingData(self.sim_file, chart)
+        timing_data = TimingData(self.simfile, chart)
         timing_eng = TimingEngine(timing_data)
         song_length = timing_eng.time_at(Beat(4*self.measures))
         return song_length
@@ -90,86 +92,48 @@ class SimfileParser:
                 sp_levels[chart.difficulty.lower()] = int(chart.meter)
         return {'single': sp_levels, 'double': dp_levels}
 
-    def parseTiming(self, chart=None):
-        if chart is None and self.per_chart:
-            data = []
-            diffs = ''
-            for chart in self.charts:
-                if chart.difficulty[0] not in diffs:
-                    diffs += chart.difficulty[0]
-                    data += self.parseTiming(chart)
-            # check difficulties are in order from Beginner to Challenge
-            order = 'BEMHC'
-            # diffs = reduce(lambda x, y: x+y, map(lambda s: s[0], d.keys()), '')
-            assert(diffs in order)
+    def parseCharts(self):
+        data = []
+        if not self.per_chart:
+            return self.parseChart(self.charts[0])
 
-            return data
+        diffs = ''
+        for chart in self.charts:
+            if chart.difficulty[0] not in diffs:
+                diffs += chart.difficulty[0]
+                data += self.parseChart(chart)
+        # check difficulties are in order from Beginner to Challenge
+        order = 'BEMHC'
+        assert(diffs in order)
+        return data
 
-        data = {}
-        if chart is None:
-            timing_data = TimingData(self.sim_file)
-            displaybpm = (self.sim_file.displaybpm)
-        else:
-            timing_data = TimingData(self.sim_file, chart)
-            displaybpm = (chart.displaybpm)
 
-        # if displaybpm:
-        #     bpm_range = BPMRange(displaybpm)
-        # else:
-        #     bpm_range = BPMRange.from_TimingData(timing_data)
-
+    def parseChart(self, chart):
+        timing_data = TimingData(self.simfile, chart)
         timing_eng = TimingEngine(timing_data)
 
-        # note_data = NoteData(chart)
-        # timed_notes = time_notes(note_data, timing_data) # generator of TimedNote() types, 
-
-        bpm_times = [timing_eng.time_at(bpm.beat) for bpm in timing_data.bpms]
-        bpm_times.append(self.song_length) 
+        bpm_timestamps = [timing_eng.time_at(bpm.beat) for bpm in timing_data.bpms]
+        bpm_timestamps.append(self.song_length) 
         bpm_vals = [bpm.value for bpm in timing_data.bpms]
         bpm_vals.append(bpm_vals[-1])
 
-        data.update(self.processBPM(bpm_times, bpm_vals))
+        # displaybpm = self.simfile.displaybpm # some songs dont have displaybpm field. e.g. illegal function call
+        data = self.parseBpm(bpm_timestamps, bpm_vals)
 
         data['stops'] = [_processStop(timing_eng, stop, data['dominant_bpm']) for stop in timing_data.stops]
 
         return [data]
 
-    def stripBPMFalseStart(self, bpms):
-        '''
-        Some charts have a different starting bpm (off by 1 or 2) for like 1 measure, but are otherwise constant
-        '''
-        if len(bpms) > 2:
-            return
-
-        bpm = bpms[0]
-        if bpm['ed'] - bpm['st'] < FALSE_START_DUR:
-            bpms[1]['st'] = bpms[0]['st']
-            del bpms[0]
-            LOGGER.info(f'stripped false start for {self.sim_file.title}')
-
-    def cleanBPM(self, bpms):
-        new = []
-        for i in range(len(bpms)):
-            if i+1 < len(bpms):
-                st, _, val = bpms[i].values()
-                _, _, val2 = bpms[i+1].values()
-                if val2 == val:
-                    bpms[i+1]['st'] = st
-                    # LOGGER.info(f'merging {val} section at {st} in {self.sim_file.title}')
-                    continue
-
-            new.append(bpms[i])
-        return new
-
-    def processBPM(self, bpm_times, bpm_vals):
+    def parseBpm(self, bpm_times, bpm_vals):
         bpms = [{'st': float(_fmt(st)), 'ed': float(_fmt(ed)), 'val': int(_fmt(val,'.0f'))} for st, ed, val in zip(bpm_times[:-1], bpm_times[1:], bpm_vals[:-1]) ]
+
         bpms = self.cleanBPM(bpms)
-        self.stripBPMFalseStart(bpms)
 
         d = {}
         d['dominant_bpm'], dominant_dur = self.dominantBPM(bpms)
         
-        # initialise _max as minimum, and update while looping through
+        # Get actual min/max bpm, actual meaning the bpm must last a significant amount of duration
+        # true_min/max is instantaneous min/max bpm
         durs = list(map(lambda x: x['ed'] - x['st'], bpms))
         vals = list(map(lambda x: x['val'], bpms))
         d['true_min'] = _max = min(vals)
@@ -185,6 +149,45 @@ class SimfileParser:
         d['bpm_range'] = f'{_min}~{_max}' if _min != _max else f'{_min}'
         d['bpms'] = bpms
         return d
+
+    def cleanBPM(self, bpms):
+        '''
+        smoothen bpm bumps & merge consecutive sections with equal bpm
+        '''
+
+        # skip 
+        if self.simfile.titletranslit == 'deltaMAX':
+            return bpms
+
+        new = [bpms.pop(0)]
+        while bpms:
+            b2 = bpms.pop(0)
+            st, ed, val = new[-1].values()
+            st2, ed2, val2 = b2.values()
+
+            # false bpm bump?
+            if abs(val2 - val) <= BPM_BUMP_TRIGGER_DIFF:
+                if abs(val2 - val) <= BPM_BUMP_SMOOTH_DIFF and (ed - st) < BPM_BUMP_DUR:
+                    new[-1]['val'] = val2 if (ed2 - st2) > (ed - st) else val
+                    new[-1]['ed'] = ed2
+                    LOGGER.info(self.simfile.title + '\n\t' +
+                                f'bpm bump {st}~{ed}~{ed2} @ {val}~{val2} -> {st}~{ed2} @ {new[-1]["val"]}')
+                else:
+                    LOGGER.debug(self.simfile.title + '\n\t' +
+                                f'bpm bump {st}~{ed}~{ed2} @ {val}~{val2}')
+                    new.append(b2)
+                    continue
+
+            # check for matching bpm, noting new[-1] may have changed
+            st, ed, val = new[-1].values()
+            if val == val2:
+                new[-1]['ed'] = ed2
+            else:
+                new.append(b2)
+                continue
+
+        return new
+
 
     def dominantBPM(self, bpms):
         # compute dominant BPM of song
