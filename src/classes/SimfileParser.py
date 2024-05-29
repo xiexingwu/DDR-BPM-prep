@@ -24,11 +24,8 @@ def _sec2beat(sec, bpm):
 def _fmt(decimal, fmt='.3f'):
     return format(float(decimal), fmt)
 
-def _processStop(timing_eng, stop, dominant_bpm):
-    stop_time = timing_eng.time_at(stop.beat)
-    # stop_beats = _sec2beat(stop.value, timing_eng.bpm_at(stop.beat))
-    stop_beats = _sec2beat(stop.value, dominant_bpm)
-    return {'st': float(_fmt(stop_time)), 'dur': float(_fmt(stop.value)), 'beats': float(_fmt(stop_beats))}
+def _round(x, nearest=1.):
+    return round(x / nearest) * nearest
 
 def _printBPMs(bpm_times, bpm_vals) -> None:
     print('-----BPM changes-----')
@@ -120,12 +117,58 @@ class SimfileParser:
         # displaybpm = self.simfile.displaybpm # some songs dont have displaybpm field. e.g. illegal function call
         data = self.parseBpm(bpm_timestamps, bpm_vals)
 
-        data['stops'] = [_processStop(timing_eng, stop, data['dominant_bpm']) for stop in timing_data.stops]
+        data['stops'] = [self.processStop(timing_eng, stop) for stop in timing_data.stops]
 
         return [data]
 
+    """
+    TODO - calculate beats @ pre/post-bpms. If one of them is close to a nice number (1/3, 1/2, 1), then use it.
+    Examples to consider: 
+        Pluto - .48s (1 beat @ 125 bpm, 1.04 beat @ 130 bpm)
+        out of focus - 1st stop/slowdown (1.75 beats @ 167 bpm, .875 beats @ 84 bpm)
+        Max.(period) - 1st stop (6.646 beats @ 300 bpm to 4 beats @ 180 bpm)
+    """
+    def processStop(self, timing_eng, stop):
+        stop_time = timing_eng.time_at(stop.beat)
+        bpm_pre = round(timing_eng.bpm_at(stop.beat-1))
+        bpm_post = round(timing_eng.bpm_at(stop.beat+1))
+
+        convert = lambda bpm: float(_fmt(_sec2beat(stop.value, bpm)))
+        beats_pre = convert(bpm_pre)
+        beats_post = convert(bpm_post)
+
+        def _niceness(x):
+            to_third = abs(x - _round(x, nearest=1/3))
+            to_quarter = abs(x - _round(x, nearest=1/4))
+            return (to_third, 1/3) if to_third < to_quarter else (to_quarter, 1/4)
+
+        nice_pre, denom_pre = _niceness(beats_pre)
+        nice_post, denom_post = _niceness(beats_post)
+
+        if nice_pre <= nice_post and nice_pre <= 0.05:
+            beats = [{'bpm': bpm_pre, 
+                      'val': _round(beats_pre, nearest=denom_pre)
+                    }]
+        elif nice_post <= 0.05:
+            beats = [{'bpm': bpm_post, 
+                      'val': _round(beats_post, nearest=denom_post)
+                    }]
+        else:
+            LOGGER.debug(self.simfile.title + '\n\t' + "no nice stop bpm found")
+            HERE
+            beats = [{'bpm': bpm_pre, 
+                      'val': convert(bpm_pre)
+                    }, {'bpm': bpm_post, 
+                      'val': convert(bpm_post)
+                    }]
+
+        return {'st': float(_fmt(stop_time)), 
+                'dur': float(_fmt(stop.value)), 
+                'beats': beats
+                }
+
     def parseBpm(self, bpm_times, bpm_vals):
-        bpms = [{'st': float(_fmt(st)), 'ed': float(_fmt(ed)), 'val': int(_fmt(val,'.0f'))} for st, ed, val in zip(bpm_times[:-1], bpm_times[1:], bpm_vals[:-1]) ]
+        bpms = [{'st': float(_fmt(st)), 'ed': float(_fmt(ed)), 'val': round(val)} for st, ed, val in zip(bpm_times[:-1], bpm_times[1:], bpm_vals[:-1]) ]
 
         bpms = self.cleanBPM(bpms)
 

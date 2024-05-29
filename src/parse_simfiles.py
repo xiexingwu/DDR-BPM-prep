@@ -115,8 +115,8 @@ def writeSummaryToDist(songs):
 def writeSongsToDist(songs):
     for song in songs:
         fname = song["name"] + ".json"
+        LOGGER.debug(f"Writing {fname}")
         _writeJSON(song, str(DATA_FOLDER/fname))
-        LOGGER.debug(f"Wrote {fname}")
 
 def main():
     songs = []
