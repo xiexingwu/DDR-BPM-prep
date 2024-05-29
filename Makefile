@@ -7,7 +7,7 @@ main: check_songs
 	python3 src/parse_simfiles.py
 
 # check for duplicates, missing songs, etc.
-check_songs: clean
+check_songs:
 	$(info ###### MAKE SURE all_songs.txt HAS ENDING NEW LINE)
 	$(info ###### MAKE SURE YOU HAVE RUN THE FOLLOWING: make unzip)
 	python src/check_songs.py
@@ -34,4 +34,5 @@ strip:
 	done
 
 clean:
+	mkdir -p log
 	rm log/*.txt
