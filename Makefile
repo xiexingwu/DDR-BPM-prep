@@ -19,44 +19,35 @@ load:
 
 ## MODERN pipeline
 scrape:
-	bash scripts/zenius_pack.sh 1509 # A3
-	bash scripts/zenius_pack.sh 1293 # A20p
-	bash scripts/zenius_pack.sh 1292 # A20
-	bash scripts/zenius_pack.sh 1148 # A
-	bash scripts/zenius_pack.sh 864 # 2014
-	bash scripts/zenius_pack.sh 845 # 2013
-	bash scripts/zenius_pack.sh 802 # X3
-	bash scripts/zenius_pack.sh 546 # X2
-	bash scripts/zenius_pack.sh 295 # X
-	bash scripts/zenius_pack.sh 77 # SuperNOVA2
-	bash scripts/zenius_pack.sh 1 # SuperNOVA
-	bash scripts/zenius_pack.sh 41 # EXTREME
-	bash scripts/zenius_pack.sh 31 # MAX2
-	bash scripts/zenius_pack.sh 40 # MAX
-	bash scripts/zenius_pack.sh 30 # 5
-	bash scripts/zenius_pack.sh 39 # 4
-	bash scripts/zenius_pack.sh 38 # 3
-	bash scripts/zenius_pack.sh 32 # 2
-	bash scripts/zenius_pack.sh 37 # 1
+	bash scripts/zenius_pack.sh 1509 A3
+	bash scripts/zenius_pack.sh 1293 "A20 PLUS"
+	bash scripts/zenius_pack.sh 1292 A20
+	bash scripts/zenius_pack.sh 1148 A
+	bash scripts/zenius_pack.sh 864 2014
+	bash scripts/zenius_pack.sh 845 2013
+	bash scripts/zenius_pack.sh 802 X3
+	bash scripts/zenius_pack.sh 546 X2
+	bash scripts/zenius_pack.sh 295 X
+	bash scripts/zenius_pack.sh 77 SuperNOVA2
+	bash scripts/zenius_pack.sh 1 SuperNOVA
+	bash scripts/zenius_pack.sh 41 EXTREME
+	bash scripts/zenius_pack.sh 31 MAX2
+	bash scripts/zenius_pack.sh 40 MAX
+	bash scripts/zenius_pack.sh 30 5th
+	bash scripts/zenius_pack.sh 39 4th
+	bash scripts/zenius_pack.sh 38 3rd
+	bash scripts/zenius_pack.sh 32 2nd
+	bash scripts/zenius_pack.sh 37 1st
 
 ## LEGACY pipeline
 
-# unzip data from ZiV zip files (error 9: .zip file not found)
-unzip: strip
-	for f in data/*.zip; do \
-		unzip -uo "$$f" "*.sm" "*.ssc" "*.png" || [ $$? -eq 9 ]; \
-	done
-	make fix
+# unzip data from ZiV zip files
+unzip:
+	bash scripts/unzip_pack.sh
 
 # perform various file fixes
 fix:
-	bash fix.sh 
-
-# remove video/audio from ZiV zip files
-strip:
-	for f in data/*.zip; do \
-		zip -d "$$f" "*.avi" "*.ogg" || [ $$? -eq 12 ]; \
-	done
+	bash scripts/fix.sh 
 
 clean:
 	mkdir -p log

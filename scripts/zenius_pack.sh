@@ -5,11 +5,12 @@ then
     return 1;
 else
 	id=$1;
+	ver=$2;
 fi
 	mkdir -p data;
 	cd data;
 
-    file=${id}.zip
+    file=${ver}.zip
     uri=$(curl https://zenius-i-vanisher.com/v5.2/viewsimfilecategory.php?categoryid=$id | 
     grep 'class="fb"' | grep 'download.php?' | sed -nE 's/.*href="([^"]+).*/https\:\/\/zenius\-i\-vanisher\.com\/v5\.2\/\1/p' |
     sed -ne 's/amp;//p')
