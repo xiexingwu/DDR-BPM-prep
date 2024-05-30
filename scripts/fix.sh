@@ -6,16 +6,18 @@ fix_deltamax(){
 }
 
 fix_takemehigher(){
-  VER="A20 PLUS"
-  OLD="take me higher"
-  NEW="take me higher A20P"
+  ver="A20 PLUS"
+  path="data/$ver"
 
-  if [[ -d "data/$VER/$OLD" ]]; then
-    echo renaming "$VER/$OLD" to "$VER/$NEW"
-    cd "$VER"
-    mv "$OLD" "$NEW"
-    cd "$NEW"
-    rename "s/$OLD/$NEW/" *
+  old_name="take me higher"
+  new_name="take me higher A20P"
+
+  if [[ -d "$path/$old_name" ]]; then
+    echo renaming "$path/$old_name" to "$path/$new_name"
+    cd "$path"
+    mv "$old_name" "$new_name"
+    cd "$new_name"
+    rename "s/$old_name/$new_name/" * && echo "done"
   fi
 }
 
