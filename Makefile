@@ -5,9 +5,12 @@ VERS = "DDR A3" "DDR A20 PLUS" "DDR A20" "DDR A" "DDR 2014" "DDR 2013" "DDR X3" 
 # PYTHON
 ################################################################################
 main: check_songs
-	$(info ###### CONSIDER RUNNING: make load; AND CHECKING THE VARIABLE: data)
+	$(info ################################################################################)
+	$(info # Once finished, run `make load` to inspect the variable `songs`)
+	$(info ################################################################################)
 	python src/parse_courses.py
-	python -m pdb -c continue src/parse_simfiles.py
+	python src/parse_simfiles.py
+	# python -m pdb -c continue src/parse_simfiles.py
 
 # check for duplicates, missing songs, etc.
 check_songs: clean
@@ -17,9 +20,13 @@ check_songs: clean
 	$(info ################################################################################)
 	python src/check_songs.py
 
-# load data.json to inspect data
+# load data to inspect
 load:
-	python3 -i src/parse_simfiles.py -l
+	python -i src/parse_simfiles.py -l
+
+# load data & write
+write:
+	python src/parse_simfiles.py -l -w
 
 ################################################################################
 # SCRAPER
@@ -73,7 +80,7 @@ fix:
 # CLEAN
 ################################################################################
 clean:
-	rm -fv log/*.txt
+	rm -fv log/*.txt || [ $$? -eq 1 ]
 
 clobber: clean
 	rm -fv data/**/*.zip
