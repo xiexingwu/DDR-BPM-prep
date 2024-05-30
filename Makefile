@@ -59,6 +59,7 @@ dedupe:
 	bash scripts/dedupe_song.sh "DYNAMITE RAVE (AIR Special)" SuperNOVA2
 	bash scripts/dedupe_song.sh Happy X
 	bash scripts/dedupe_song.sh "ever snow" MAX2
+	bash scripts/dedupe_song.sh "La Bamba" EXTREME
 
 unzip:
 	bash scripts/unzip_pack.sh

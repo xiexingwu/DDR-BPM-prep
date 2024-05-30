@@ -27,11 +27,9 @@ def _findFileCaseSensitive(findIn: str, filename: str) -> tuple[list[str], list[
 
 def _checkFiles(lines: list[str]) -> bool:
     flag = False
-    search_glob = str(globals.seed_folder / "**") + "/"
-    globals.logger.info(f"searching in {search_glob}")
     for songname in lines:
         folders, invalid_parents = _findFileCaseSensitive(
-            findIn=search_glob, filename=songname
+            findIn=str(globals.seed_folder)+"/**/", filename=songname
         )
 
         if len(folders) > 1:
