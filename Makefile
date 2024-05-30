@@ -43,8 +43,8 @@ scrape:
 
 # unzip data from ZiV zip files (error 9: .zip file not found)
 unzip: strip
-	for f in $(VERS); do \
-		unzip -uo "$$f.zip" "*.sm" "*.ssc" "*.png" -d $$f || [ $$? -eq 9 ]; \
+	for f in data/*.zip; do \
+		unzip -uo "$$f" "*.sm" "*.ssc" "*.png" || [ $$? -eq 9 ]; \
 	done
 	make fix
 
@@ -54,8 +54,8 @@ fix:
 
 # remove video/audio from ZiV zip files
 strip:
-	for f in $(VERS); do \
-		zip -d "$$f.zip" "*.avi" "*.ogg" || [ $$? -eq 12 ]; \
+	for f in data/*.zip; do \
+		zip -d "$$f" "*.avi" "*.ogg" || [ $$? -eq 12 ]; \
 	done
 
 clean:
