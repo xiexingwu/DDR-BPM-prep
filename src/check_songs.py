@@ -75,6 +75,14 @@ def _checkRemoved(lines: list[str]):
     with open(globals.removed_file, "r") as file:
         known_removed = list(map(lambda x: x.strip(), file))
 
+    invalid = set(known_removed) & set(lines)
+    if invalid:
+        globals.logger.error(f"Following songs can only appear in one of '{globals.allsongs_file}' and '{globals.removed_file}':")
+        for i in invalid:
+            globals.logger.error(f"\t{i}")
+        raise RuntimeError("Invalid song_list configuration")
+
+
     # check for folders that are suspected recently removed songs
     for folder in glob.glob(str(globals.seed_folder / "*")):
         # only search within folders (not .zip)

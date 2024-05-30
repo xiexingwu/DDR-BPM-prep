@@ -7,7 +7,7 @@ VERS = "DDR A3" "DDR A20 PLUS" "DDR A20" "DDR A" "DDR 2014" "DDR 2013" "DDR X3" 
 main: check_songs
 	$(info ###### CONSIDER RUNNING: make load; AND CHECKING THE VARIABLE: data)
 	python src/parse_courses.py
-	python src/parse_simfiles.py
+	python -m pdb -c continue src/parse_simfiles.py
 
 # check for duplicates, missing songs, etc.
 check_songs: clean
