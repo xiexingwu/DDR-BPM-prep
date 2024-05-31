@@ -1,16 +1,15 @@
 SHELL := /bin/zsh
-VERS = "DDR A3" "DDR A20 PLUS" "DDR A20" "DDR A" "DDR 2014" "DDR 2013" "DDR X3" "DDR X2" "DDR X" "DDR SuperNOVA2" "DDR SuperNOVA" "DDR EXTREME" "DDR MAX2" "DDR MAX" "DDR 5th" "DDR 4th" "DDR 3rd" "DDR 2nd" "DDR"
 
 ################################################################################
-# PYTHON
+# PYTHON Processor
 ################################################################################
 main: check_songs
 	$(info ################################################################################)
 	$(info # Once finished, run `make load` to inspect the variable `songs`)
 	$(info ################################################################################)
-	python src/parse_courses.py
-	python src/parse_simfiles.py
-	# python -m pdb -c continue src/parse_simfiles.py
+	poetry run python src/parse_courses.py
+	poetry run python src/parse_simfiles.py
+	# poetry run python -m pdb -c continue src/parse_simfiles.py
 
 # check for duplicates, missing songs, etc.
 check_songs: clean
@@ -18,15 +17,15 @@ check_songs: clean
 	$(info # 1. Make sure all_songs.txt has ending new line)
 	$(info # 2. Make sure you ran a full scrape: make full_scrape)
 	$(info ################################################################################)
-	python src/check_songs.py
+	poetry run python src/check_songs.py
 
 # load data to inspect
 load:
-	python -i src/parse_simfiles.py -l
+	poetry run python -i src/parse_simfiles.py -l
 
 # load data & write
 write:
-	python src/parse_simfiles.py -l -w
+	poetry run python src/parse_simfiles.py -l -w
 
 ################################################################################
 # SCRAPER

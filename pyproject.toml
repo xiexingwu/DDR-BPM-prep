@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "ddr-bpm-simfiles"
+version = "1.0"
+description = "DDR simfile scraper and processor\u001b"
+authors = ["Michael X"]
+license = "Copyleft"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[tool.poetry.group.dev.dependencies]
+simfile = "^2.1.1"
+icu = "^0.0.1"
+romkan = "^0.2.1"
+unihandecode = "^0.81"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
