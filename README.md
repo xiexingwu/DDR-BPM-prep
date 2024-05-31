@@ -1,25 +1,37 @@
 # Quickstart
 ## Install
 Runs on Python 3.11.4 on MacOS M1.
+
+### System dependencies
+```
+- python-tk
+    - `brew install python-tk`
+- ICU (MacOS instructions)
+    - `brew install pkg-config icu4c`
+    - `export PATH=/opt/homebrew/opt/icu4c/bin:$PATH`
+    - `export PATH=/opt/homebrew/opt/icu4c/sbin:$PATH`
+    - `export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/homebrew/opt/icu4c/lib/pkgconfig`
+    - (may need to install xcode to get clibs) `xcode-select --install`
+```
+
+### Poetry
 ```
 # install
 poetry install
 ```
-Dependencies:
-- python-tk
-    - `brew install python-tk`
 
-## Scrape
+## Run
+### Scrape
 ```shell
 make full_scrape
 ```
 
-## Process and write data
+### Process and write data
 ```shell
 make main
 ```
 
-## Load data to inspect
+### Load data to inspect
 ```shell
 make load
 ```
