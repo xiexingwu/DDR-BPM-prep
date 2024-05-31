@@ -98,7 +98,7 @@ def copyRawsToDist(songs: list[dict]) -> None:
             / song["name"]
             / (song["name"] + (".ssc" if song["ssc"] else ".sm"))
         )
-        dst = globals.dist_folder / "simfiles" / src.name
+        dst = globals.dist_simfiles_folder / src.name
         subprocess.Popen(["cp", "-f", str(src.absolute()), str(dst.absolute())])
 
         # Copy Jackets
@@ -108,7 +108,7 @@ def copyRawsToDist(songs: list[dict]) -> None:
             / song["name"]
             / (song["name"] + "-jacket.png")
         )
-        dst = globals.dist_folder / "jackets" / src.name
+        dst = globals.dist_jackets_folder / src.name
         subprocess.Popen(["cp", "-f", str(src.absolute()), str(dst.absolute())])
 
 
@@ -183,22 +183,26 @@ def writeSummaryToDist(songs):
         l: list(filter(lambda s: l in s["dp"].values(), summary)) for l in levels_dp
     }
     # Summary by name (see https://gist.github.com/ssut/4efb8870e8b5e9c07792)
-    songs_name = sortSongsByName(songs)
+    # songs_name = sortSongsByName(summary)
 
-    _writeJSON(summary, str(globals.dist_folder / "summaries" / "summary.json"))
+    _writeJSON(summary, str(globals.dist_summaries_folder / "summary.json"))
+    _writeJSON(songs_version, str(globals.dist_summaries_folder / "songs_version.json"))
     _writeJSON(
-        songs_version, str(globals.dist_folder / "summaries" / "songs_version.json")
+        songs_level_sp, str(globals.dist_summaries_folder / "songs_level_sp.json")
     )
     _writeJSON(
-        songs_level_sp, str(globals.dist_folder / "summaries" / "songs_level_sp.json")
-    )
-    _writeJSON(
-        songs_level_dp, str(globals.dist_folder / "summaries" / "songs_level_dp.json")
+        songs_level_dp, str(globals.dist_summaries_folder / "songs_level_dp.json")
     )
 
 
 def sortSongsByName(songs):
+    # Map weird song names, e.g. IX -> 9
+    with open(globals.name_map_file) as f:
+        name_map = {old: new for old, new in map(lambda line: line.split(","), f)}
+
+
     names = set(song["name"] for song in songs)
+    # jp_names = 
     d = Unihandecoder(lang="ja")
     collator = icu.Collator.createInstance(icu.Locale("ja_JP.UTF-8"))
     corresponds = []
@@ -206,13 +210,20 @@ def sortSongsByName(songs):
         kana = romkan.to_hiragana(d.decode(item))
         corresponds.append(kana)
     result = sorted(zip(names, corresponds), key=lambda x: collator.getSortKey(x[1]))
+    return result
+
+def translator(name):
+    d = Unihandecoder(lang="ja")
+    collator = icu.Collator.createInstance(icu.Locale("ja_JP.UTF-8"))
+    kana = romkan.to_hiragana(d.decode(item))
+    return kana
 
 
 def writeSongsToDist(songs):
     for song in songs:
         fname = song["name"] + ".json"
         globals.logger.debug(f"Writing {fname}")
-        _writeJSON(song, str(globals.dist_folder / "data" / fname))
+        _writeJSON(song, str(globals.dist_songs_folder / fname))
 
 
 def main():
@@ -254,17 +265,17 @@ def locSong(songs, title):
 if __name__ == "__main__":
     if "-l" in sys.argv:
         globals.logger.info("Reading data from json file")
-        files = glob.glob(str(globals.dist_folder / "data" / "*.json"))
+        files = glob.glob(str(globals.dist_songs_folder / "*.json"))
         songs = [_readJSON(file) for file in files]
-        summary = _readJSON(str(globals.dist_folder / "summaries" / "summary.json"))
+        summary = _readJSON(str(globals.dist_summaries_folder / "summary.json"))
         songs_version = _readJSON(
-            str(globals.dist_folder / "summaries" / "songs_version.json")
+            str(globals.dist_summaries_folder / "songs_version.json")
         )
         songs_level_sp = _readJSON(
-            str(globals.dist_folder / "summaries" / "songs_level_sp.json")
+            str(globals.dist_summaries_folder / "songs_level_sp.json")
         )
         songs_level_dp = _readJSON(
-            str(globals.dist_folder / "summaries" / "songs_level_dp.json")
+            str(globals.dist_summaries_folder / "songs_level_dp.json")
         )
     else:
         songs = main()

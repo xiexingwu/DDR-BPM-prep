@@ -61,11 +61,10 @@ def main():
     d += readCoursesFile(globals.ddr_courses_file, source="DDR")
     d += readCoursesFile(globals.life4_courses_file, source="LIFE4")
 
-    with open(str(globals.dist_folder / "courses" / "courses.json"), "w") as file:
+    with open(str(globals.dist_courses_folder / "courses.json"), "w") as file:
         json.dump(d, file)
     return d
 
 
 if __name__ == "__main__":
     d = main()
-
