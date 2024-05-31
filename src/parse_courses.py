@@ -61,7 +61,7 @@ def main():
     d += readCoursesFile(globals.ddr_courses_file, source="DDR")
     d += readCoursesFile(globals.life4_courses_file, source="LIFE4")
 
-    with open(str(globals.dist_folder / "data" / "courses.json"), "w") as file:
+    with open(str(globals.dist_folder / "courses" / "courses.json"), "w") as file:
         json.dump(d, file)
     return d
 

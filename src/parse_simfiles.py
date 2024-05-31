@@ -115,35 +115,33 @@ Use as an index to filter/sort/categorise songs.
 
 
 def writeSummaryToDist(songs):
-    def flattenBpms(charts):
-        if len(charts) == 1:
-            return charts[0]["bpm_range"]
-        bpms = [c["bpm_range"].split("~") for c in charts]
-        min_bpm = str(reduce(min, [int(bpm[0]) for bpm in bpms]))
-        max_bpm = str(reduce(max, [int(bpm[-1]) for bpm in bpms]))
-        return min_bpm if min_bpm == max_bpm else "~".join([min_bpm, max_bpm])
 
-    def flattenLevels(levels):
-        map = {
-            "beginner": "b",
-            "easy": "B",
-            "medium": "D",
-            "hard": "E",
-            "challenge": "C",
-        }
-        return {map[d]: levels[d] for d in map.keys() if d in levels.keys()}
+    def summarise(song):
+        def summariseBpms(charts):
+            bpms = [chart["bpm_range"].split("~") for chart in charts]
+            min_bpm = reduce(min, [int(bpm[0]) for bpm in bpms])
+            max_bpm = reduce(max, [int(bpm[-1]) for bpm in bpms])
+            return [min_bpm] if min_bpm == max_bpm else [min_bpm, max_bpm]
 
-    summary = [
-        {
+        def summariseLevels(levels):
+            map = {
+                "beginner": "b",
+                "easy": "B",
+                "medium": "D",
+                "hard": "E",
+                "challenge": "C",
+            }
+            return {map[d]: levels[d] for d in map.keys() if d in levels.keys()}
+
+        return {
             "name": song["name"],
             "version": song["version"],
-            "sp": flattenLevels(song["sp"]),
-            "dp": flattenLevels(song["dp"]),
-            "bpm_range": flattenBpms(song["charts"]),
+            "sp": summariseLevels(song["sp"]),
+            "dp": summariseLevels(song["dp"]),
+            "bpm_range": summariseBpms(song["charts"]),
         }
-        for song in songs
-    ]
 
+    summary = [summarise(song) for song in songs]
     # Summary by version
     versions = [
         "A3",
@@ -168,17 +166,17 @@ def writeSummaryToDist(songs):
     ]
 
     songs_version = {
-        v: list(filter(lambda s: s["version"] == v, songs)) for v in versions
+        v: list(filter(lambda s: s["version"] == v, summary)) for v in versions
     }
     # Summary by level sp
     levels_sp = list(range(1, 20))
     songs_level_sp = {
-        l: list(filter(lambda s: l in s["sp"].values(), songs)) for l in levels_sp
+        l: list(filter(lambda s: l in s["sp"].values(), summary)) for l in levels_sp
     }
     # Summary by level dp
     levels_dp = list(range(2, 20))
     songs_level_dp = {
-        l: list(filter(lambda s: l in s["dp"].values(), songs)) for l in levels_dp
+        l: list(filter(lambda s: l in s["dp"].values(), summary)) for l in levels_dp
     }
     # Summary by name (see https://gist.github.com/ssut/4efb8870e8b5e9c07792)
 
@@ -242,6 +240,7 @@ if __name__ == "__main__":
         globals.logger.info("Reading data from json file")
         files = glob.glob(str(globals.dist_folder / "data" / "*.json"))
         songs = [_readJSON(file) for file in files]
+        summary = _readJSON(str(globals.dist_folder / "summaries" / "summary.json"))
         songs_version = _readJSON(
             str(globals.dist_folder / "summaries" / "songs_version.json")
         )
