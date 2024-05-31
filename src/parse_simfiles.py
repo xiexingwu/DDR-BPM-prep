@@ -1,4 +1,4 @@
-import globals
+import env
 
 import json
 from pathlib import Path
@@ -31,20 +31,20 @@ load song file-info into "songs" in-place
 
 
 def loadSongs(songs: list[dict]) -> None:
-    with open(globals.allsongs_file, "r") as file:
+    with open(env.allsongs_file, "r") as file:
         titles = list(map(lambda line: line.strip(), file))
 
     for title in titles:
         # for path in folder.glob("*/"):
-        folders = glob.glob(str(globals.seed_folder) + "/*/" + glob.escape(title))
+        folders = glob.glob(str(env.seed_folder) + "/*/" + glob.escape(title))
         if not folders:
-            globals.globals.logger.error(f"{title} not found in {globals.seed_folder}")
+            env.logger.error(f"{title} not found in {env.seed_folder}")
             raise RuntimeError
 
         if len(folders) > 1:
-            globals.globals.logger.warning(f"Duplicates ({len(folders)}): {title}")
+            env.logger.warning(f"Duplicates ({len(folders)}): {title}")
             for folder in folders:
-                globals.globals.logger.warning(f"\t{folder}")
+                env.logger.warning(f"\t{folder}")
 
         path = Path(folders.pop())
         # path.name should == song
@@ -66,7 +66,7 @@ loads stepchart data to "songs" in-place
 def addChartData(songs: list) -> None:
     for song in songs:
         simfile_path = (
-            globals.seed_folder
+            env.seed_folder
             / song["version"]
             / song["name"]
             / (song["name"] + (".ssc" if song["ssc"] else ".sm"))
@@ -93,22 +93,22 @@ def copyRawsToDist(songs: list[dict]) -> None:
 
         # Copy simfiles
         src = (
-            Path(globals.seed_folder)
+            Path(env.seed_folder)
             / song["version"]
             / song["name"]
             / (song["name"] + (".ssc" if song["ssc"] else ".sm"))
         )
-        dst = globals.dist_simfiles_folder / src.name
+        dst = env.dist_simfiles_folder / src.name
         subprocess.Popen(["cp", "-f", str(src.absolute()), str(dst.absolute())])
 
         # Copy Jackets
         src = (
-            Path(globals.seed_folder)
+            Path(env.seed_folder)
             / song["version"]
             / song["name"]
             / (song["name"] + "-jacket.png")
         )
-        dst = globals.dist_jackets_folder / src.name
+        dst = env.dist_jackets_folder / src.name
         subprocess.Popen(["cp", "-f", str(src.absolute()), str(dst.absolute())])
 
 
@@ -185,24 +185,19 @@ def writeSummaryToDist(songs):
     # Summary by name (see https://gist.github.com/ssut/4efb8870e8b5e9c07792)
     # songs_name = sortSongsByName(summary)
 
-    _writeJSON(summary, str(globals.dist_summaries_folder / "summary.json"))
-    _writeJSON(songs_version, str(globals.dist_summaries_folder / "songs_version.json"))
-    _writeJSON(
-        songs_level_sp, str(globals.dist_summaries_folder / "songs_level_sp.json")
-    )
-    _writeJSON(
-        songs_level_dp, str(globals.dist_summaries_folder / "songs_level_dp.json")
-    )
+    _writeJSON(summary, str(env.dist_summaries_folder / "summary.json"))
+    _writeJSON(songs_version, str(env.dist_summaries_folder / "songs_version.json"))
+    _writeJSON(songs_level_sp, str(env.dist_summaries_folder / "songs_level_sp.json"))
+    _writeJSON(songs_level_dp, str(env.dist_summaries_folder / "songs_level_dp.json"))
 
 
 def sortSongsByName(songs):
     # Map weird song names, e.g. IX -> 9
-    with open(globals.name_map_file) as f:
+    with open(env.name_map_file) as f:
         name_map = {old: new for old, new in map(lambda line: line.split(","), f)}
 
-
     names = set(song["name"] for song in songs)
-    # jp_names = 
+    # jp_names =
     d = Unihandecoder(lang="ja")
     collator = icu.Collator.createInstance(icu.Locale("ja_JP.UTF-8"))
     corresponds = []
@@ -212,31 +207,32 @@ def sortSongsByName(songs):
     result = sorted(zip(names, corresponds), key=lambda x: collator.getSortKey(x[1]))
     return result
 
+
 def translator(name):
     d = Unihandecoder(lang="ja")
     collator = icu.Collator.createInstance(icu.Locale("ja_JP.UTF-8"))
-    kana = romkan.to_hiragana(d.decode(item))
+    kana = romkan.to_hiragana(d.decode(name))
     return kana
 
 
 def writeSongsToDist(songs):
     for song in songs:
         fname = song["name"] + ".json"
-        globals.logger.debug(f"Writing {fname}")
-        _writeJSON(song, str(globals.dist_songs_folder / fname))
+        env.logger.debug(f"Writing {fname}")
+        _writeJSON(song, str(env.dist_songs_folder / fname))
 
 
 def main():
     songs = []
     loadSongs(songs)
-    globals.logger.info("Finished loading resources")
+    env.logger.info("Finished loading resources")
 
     addChartData(songs)
-    globals.logger.info("Finished processing chart data")
+    env.logger.info("Finished processing chart data")
 
     if "-n" not in sys.argv:
         writeSongsToDist(songs)
-        globals.logger.info("Finished writing json data")
+        env.logger.info("Finished writing json data")
     return songs
 
 
@@ -264,19 +260,18 @@ def locSong(songs, title):
 
 if __name__ == "__main__":
     if "-l" in sys.argv:
-        globals.logger.info("Reading data from json file")
-        files = glob.glob(str(globals.dist_songs_folder / "*.json"))
+        env.logger.info("Reading data from json file")
+        files = glob.glob(str(env.dist_songs_folder / "*.json"))
         songs = [_readJSON(file) for file in files]
-        summary = _readJSON(str(globals.dist_summaries_folder / "summary.json"))
-        songs_version = _readJSON(
-            str(globals.dist_summaries_folder / "songs_version.json")
-        )
+        summary = _readJSON(str(env.dist_summaries_folder / "summary.json"))
+        songs_version = _readJSON(str(env.dist_summaries_folder / "songs_version.json"))
         songs_level_sp = _readJSON(
-            str(globals.dist_summaries_folder / "songs_level_sp.json")
+            str(env.dist_summaries_folder / "songs_level_sp.json")
         )
         songs_level_dp = _readJSON(
-            str(globals.dist_summaries_folder / "songs_level_dp.json")
+            str(env.dist_summaries_folder / "songs_level_dp.json")
         )
+
     else:
         songs = main()
 
@@ -284,6 +279,11 @@ if __name__ == "__main__":
         "-l" in sys.argv and "-w" in sys.argv
     ):
         writeSummaryToDist(songs)
-        globals.logger.info("Finished writing songs summary")
+        env.logger.info("Finished writing songs summary")
         copyRawsToDist(songs)
-        globals.logger.info("Finished copying resources")
+        env.logger.info("Finished copying resources")
+
+    if "-i" in sys.argv:
+        from ptpython.repl import embed
+
+        sys.exit(embed(globals(), locals()))

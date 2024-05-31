@@ -36,7 +36,11 @@ make main
 make load
 ```
 
-# Improvements
+# Quality of Life
+- Use `ipdb`
+- Use `ptpython` (see [official repo](https://github.com/prompt-toolkit/ptpython?tab=readme-ov-file#embedding-the-repl) on setting up a PYTHONSTARTUP)
+
+# Improvements Ideas
 - Automate scraping simfiles
     - maintain list of categoryid (one for each DDR version)
         - Example: A3 GET `https://zenius-i-vanisher.com/v5.2/download.php?type=ddrpack&categoryid=1509`)

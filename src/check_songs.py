@@ -2,7 +2,7 @@
 make sure all_songs.txt is valid
 """
 
-import globals
+import env
 
 from pathlib import Path
 import glob
@@ -29,18 +29,18 @@ def _checkFiles(lines: list[str]) -> bool:
     flag = False
     for songname in lines:
         folders, invalid_parents = _findFileCaseSensitive(
-            findIn=str(globals.seed_folder)+"/**/", filename=songname
+            findIn=str(env.seed_folder)+"/**/", filename=songname
         )
 
         if len(folders) > 1:
-            globals.logger.warning(
+            env.logger.warning(
                 "Duplicates in files:" + INDENT + INDENT.join(folders)
             )
         if len(folders) == 0:
             msg = "File not found:" + INDENT + songname
             if invalid_parents:
                 msg += INDENT + "but found in " + ",".join(invalid_parents)
-            globals.logger.error(msg)
+            env.logger.error(msg)
 
             flag = True
 
@@ -53,8 +53,8 @@ def _checkDupesInList(lines: list[str]) -> bool:
     for k, v in counter.items():
         if v > 1:
             flag = True
-            globals.logger.error(
-                f"Duplicate: {v} appearances in {globals.allsongs_file}" + INDENT + k
+            env.logger.error(
+                f"Duplicate: {v} appearances in {env.allsongs_file}" + INDENT + k
             )
 
     return flag
@@ -62,29 +62,29 @@ def _checkDupesInList(lines: list[str]) -> bool:
 
 def _checkRemoved(lines: list[str]):
     """
-    Shows songs in folders but not in globals.allsongs_file or globals.removed_file.
+    Shows songs in folders but not in env.allsongs_file or env.removed_file.
     This is probably since the songs have recently been removed from arcade.
     """
     import logging
 
-    logger = globals.logger.getChild("removed")
-    logger.addHandler(logging.FileHandler(globals.logfile("removed.txt")))
+    logger = env.logger.getChild("removed")
+    logger.addHandler(logging.FileHandler(env.logfile("removed.txt")))
     logger.propagate = False
 
     # Open list of known removed songs
-    with open(globals.removed_file, "r") as file:
+    with open(env.removed_file, "r") as file:
         known_removed = list(map(lambda x: x.strip(), file))
 
     invalid = set(known_removed) & set(lines)
     if invalid:
-        globals.logger.error(f"Following songs can only appear in one of '{globals.allsongs_file}' and '{globals.removed_file}':")
+        env.logger.error(f"Following songs can only appear in one of '{env.allsongs_file}' and '{env.removed_file}':")
         for i in invalid:
-            globals.logger.error(f"\t{i}")
+            env.logger.error(f"\t{i}")
         raise RuntimeError("Invalid song_list configuration")
 
 
     # check for folders that are suspected recently removed songs
-    for folder in glob.glob(str(globals.seed_folder / "*")):
+    for folder in glob.glob(str(env.seed_folder / "*")):
         # only search within folders (not .zip)
         if Path(folder).is_file():
             continue
@@ -112,7 +112,7 @@ def _checkRemoved(lines: list[str]):
 
 def main():
     error = False
-    with open(globals.allsongs_file, "r") as file:
+    with open(env.allsongs_file, "r") as file:
         lines = list(map(lambda x: x.strip(), file))
 
     error |= _checkFiles(lines)
@@ -121,7 +121,7 @@ def main():
     _checkRemoved(lines)
 
     if error:
-        print(f"See {globals.logfile()} for error")
+        print(f"See {env.logfile()} for error")
         raise RuntimeError
 
 

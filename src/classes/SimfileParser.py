@@ -1,4 +1,4 @@
-import globals
+import env
 import simfile
 
 # from simfile import timing
@@ -159,7 +159,7 @@ class SimfileParser:
         elif nice_post <= 0.05:
             beats = [{"bpm": bpm_post, "val": _round(beats_post, nearest=denom_post)}]
         else:
-            globals.logger.debug(self.simfile.title + "\n\t" + "no nice stop bpm found")
+            env.logger.debug(self.simfile.title + "\n\t" + "no nice stop bpm found")
             # TODO - something?
             beats = [
                 {"bpm": bpm_pre, "val": convert(bpm_pre)},
@@ -221,13 +221,13 @@ class SimfileParser:
                 if abs(val2 - val) <= BPM_BUMP_SMOOTH_DIFF and (ed - st) < BPM_BUMP_DUR:
                     new[-1]["val"] = val2 if (ed2 - st2) > (ed - st) else val
                     new[-1]["ed"] = ed2
-                    globals.logger.info(
+                    env.logger.info(
                         self.simfile.title
                         + "\n\t"
                         + f'bpm bump {st}~{ed}~{ed2} @ {val}~{val2} -> {st}~{ed2} @ {new[-1]["val"]}'
                     )
                 else:
-                    globals.logger.debug(
+                    env.logger.debug(
                         self.simfile.title
                         + "\n\t"
                         + f"bpm bump {st}~{ed}~{ed2} @ {val}~{val2}"

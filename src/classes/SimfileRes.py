@@ -1,4 +1,4 @@
-import globals
+import env
 from pathlib import Path
 
 
@@ -13,10 +13,10 @@ class SimfileRes:
 
     def checkNaming(self):
         if not self.simfile:
-            globals.logger.error(f"Simfile not found for {self.name}")
+            env.logger.error(f"Simfile not found for {self.name}")
             raise RuntimeError
         if not self.jacket:
-            globals.logger.error(f"Jacket not found for {self.jacket}.")
+            env.logger.error(f"Jacket not found for {self.jacket}.")
             raise RuntimeError
 
     def to_dict(self):
