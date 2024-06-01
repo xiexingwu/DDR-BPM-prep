@@ -115,4 +115,5 @@ def writeSummaryToDist(songs):
     utils.writeJson(songs_version, str(env.dist_summaries_folder / "songs_version.json"))
     utils.writeJson(songs_level_sp, str(env.dist_summaries_folder / "songs_level_sp.json"))
     utils.writeJson(songs_level_dp, str(env.dist_summaries_folder / "songs_level_dp.json"))
+    utils.writeJson(songs_name, str(env.dist_summaries_folder / "songs_name.json"))
 
