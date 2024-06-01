@@ -4,6 +4,7 @@ import utils
 from pathlib import Path
 from functools import reduce
 
+
 def copyRawsToDist(songs: list[dict]) -> None:
     """
     Copy simfiles & jackets to dist folder
@@ -33,11 +34,13 @@ def copyRawsToDist(songs: list[dict]) -> None:
         dst = env.dist_jackets_folder / src.name
         subprocess.Popen(["cp", "-f", str(src.absolute()), str(dst.absolute())])
 
+
 def writeSongsToDist(songs):
     for song in songs:
         fname = song["name"] + ".json"
         env.logger.debug(f"Writing {fname}")
         utils.writeJson(song, str(env.dist_songs_folder / fname))
+
 
 def writeSummaryToDist(songs):
     """
@@ -112,8 +115,13 @@ def writeSummaryToDist(songs):
     songs_name = utils.sortSongsByTitle(summary)
 
     utils.writeJson(summary, str(env.dist_summaries_folder / "summary.json"))
-    utils.writeJson(songs_version, str(env.dist_summaries_folder / "songs_version.json"))
-    utils.writeJson(songs_level_sp, str(env.dist_summaries_folder / "songs_level_sp.json"))
-    utils.writeJson(songs_level_dp, str(env.dist_summaries_folder / "songs_level_dp.json"))
+    utils.writeJson(
+        songs_version, str(env.dist_summaries_folder / "songs_version.json")
+    )
+    utils.writeJson(
+        songs_level_sp, str(env.dist_summaries_folder / "songs_level_sp.json")
+    )
+    utils.writeJson(
+        songs_level_dp, str(env.dist_summaries_folder / "songs_level_dp.json")
+    )
     utils.writeJson(songs_name, str(env.dist_summaries_folder / "songs_name.json"))
-

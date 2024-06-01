@@ -29,13 +29,11 @@ def _checkFiles(lines: list[str]) -> bool:
     flag = False
     for songname in lines:
         folders, invalid_parents = _findFileCaseSensitive(
-            findIn=str(env.seed_folder)+"/**/", filename=songname
+            findIn=str(env.seed_folder) + "/**/", filename=songname
         )
 
         if len(folders) > 1:
-            env.logger.warning(
-                "Duplicates in files:" + INDENT + INDENT.join(folders)
-            )
+            env.logger.warning("Duplicates in files:" + INDENT + INDENT.join(folders))
         if len(folders) == 0:
             msg = "File not found:" + INDENT + songname
             if invalid_parents:
@@ -77,11 +75,12 @@ def _checkRemoved(lines: list[str]):
 
     invalid = set(known_removed) & set(lines)
     if invalid:
-        env.logger.error(f"Following songs can only appear in one of '{env.allsongs_file}' and '{env.removed_file}':")
+        env.logger.error(
+            f"Following songs can only appear in one of '{env.allsongs_file}' and '{env.removed_file}':"
+        )
         for i in invalid:
             env.logger.error(f"\t{i}")
         raise RuntimeError("Invalid song_list configuration")
-
 
     # check for folders that are suspected recently removed songs
     for folder in glob.glob(str(env.seed_folder / "*")):
@@ -109,6 +108,7 @@ def _checkRemoved(lines: list[str]):
             )
         else:
             logger.info(f"{folder} - No songs suspected as removed")
+
 
 def main():
     error = False
