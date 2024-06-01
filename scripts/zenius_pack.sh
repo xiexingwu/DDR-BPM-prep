@@ -1,4 +1,6 @@
 #!/bin/bash
+SEED_DIR=${SEED_DIR:-./data}
+
 if  [ $# -ne 1 ]
 then
 	echo "Input the pack id (contained in the URL as the categoryid, example : https://zenius-i-vanisher.com/v5.2/viewsimfilecategory.php?categoryid=34)";
@@ -8,8 +10,8 @@ else
 	ver=$2;
 fi
 
-mkdir -p data;
-cd data;
+mkdir -p $SEED_DIR
+cd $SEED_DIR
 
 file=${ver}.zip
 uri=$(curl https://zenius-i-vanisher.com/v5.2/viewsimfilecategory.php?categoryid=$id | 

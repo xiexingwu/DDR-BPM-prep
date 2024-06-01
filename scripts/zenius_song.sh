@@ -1,4 +1,6 @@
 #!/bin/bash
+SEED_DIR=${SEED_DIR:-./data}
+
 if  [ $# -ne 2 ]
 then
 	echo "Input the song id (contained in the URL as the categoryid, example : https://zenius-i-vanisher.com/v5.2/viewsimfile.php?simfileid=38006)";
@@ -8,8 +10,8 @@ else
 	ver=$2;
 fi
 
-mkdir -p data/$ver;
-cd data/$ver;
+mkdir -p $SEED_DIR/$ver;
+cd $SEED_DIR/$ver;
 
 title=$(curl https://zenius-i-vanisher.com/v5.2/viewsimfile.php?simfileid=$id | grep "<h1>" | (sed -e 's/<h1>//' -e 's/<\/h1>//') | sed -e 's: /.*::');
 file=${title}.zip

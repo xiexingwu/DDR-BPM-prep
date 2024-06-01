@@ -1,11 +1,9 @@
 SHELL := /bin/zsh
 
+export PROJ_DIR=$(CURDIR)
 include Makefiles/parser.mk
 include Makefiles/scraper.mk
-
-# Don't accientally overwrite main
-main:
-	make -f Makefiles/parser.mk main
+include Makefiles/deploy.mk
 
 ################################################################################
 # CLEAN
