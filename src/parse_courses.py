@@ -61,7 +61,7 @@ def main():
     d += readCoursesFile(env.ddr_courses_file, source="DDR")
     d += readCoursesFile(env.life4_courses_file, source="LIFE4")
 
-    with open(str(env.dist_courses_folder / "courses.json"), "w") as file:
+    with open(str(env.build_courses_dir / "courses.json"), "w") as file:
         json.dump(d, file)
     return d
 

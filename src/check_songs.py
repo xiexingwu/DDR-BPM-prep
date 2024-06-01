@@ -29,7 +29,7 @@ def _checkFiles(lines: list[str]) -> bool:
     flag = False
     for songname in lines:
         folders, invalid_parents = _findFileCaseSensitive(
-            findIn=str(env.seed_folder) + "/**/", filename=songname
+            findIn=str(env.seed_dir) + "/**/", filename=songname
         )
 
         if len(folders) > 1:
@@ -83,7 +83,7 @@ def _checkRemoved(lines: list[str]):
         raise RuntimeError("Invalid song_list configuration")
 
     # check for folders that are suspected recently removed songs
-    for folder in glob.glob(str(env.seed_folder / "*")):
+    for folder in glob.glob(str(env.seed_dir / "*")):
         # only search within folders (not .zip)
         if Path(folder).is_file():
             continue

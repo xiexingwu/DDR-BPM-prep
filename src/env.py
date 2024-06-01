@@ -1,30 +1,31 @@
 from pathlib import Path
+from os import getenv
 import logging
 
 
-dist_folder = Path("./build")
-dist_courses_folder = dist_folder / "courses"
-dist_jackets_folder = dist_folder / "jackets"
-dist_simfiles_folder = dist_folder / "simfiles"
-dist_songs_folder = dist_folder / "songs"
-dist_summaries_folder = dist_folder / "summaries"
+build_dir = Path(getenv("BUILD_DIR") or "./build")
+build_courses_dir = build_dir / "courses"
+build_jackets_dir = build_dir / "jackets"
+build_simfiles_dir = build_dir / "simfiles"
+build_songs_dir = build_dir / "songs"
+build_summaries_dir = build_dir / "summaries"
 for folder in [
-    dist_folder,
-    dist_courses_folder,
-    dist_jackets_folder,
-    dist_songs_folder,
-    dist_simfiles_folder,
-    dist_summaries_folder,
+    build_dir,
+    build_courses_dir,
+    build_jackets_dir,
+    build_songs_dir,
+    build_simfiles_dir,
+    build_summaries_dir,
 ]:
     if not folder.exists():
         folder.mkdir()
 
-seed_folder = Path("./data")
-allsongs_file = str(seed_folder / "all_songs.txt")
-removed_file = str(seed_folder / "removed.txt")
-title_map_file = str(seed_folder / "title_map.csv")
-ddr_courses_file = str(seed_folder / "ddr_courses.txt")
-life4_courses_file = str(seed_folder / "life4_courses.txt")
+seed_dir = Path(getenv("SEED_DIR") or "./data")
+allsongs_file = str(seed_dir / "all_songs.txt")
+removed_file = str(seed_dir / "removed.txt")
+title_map_file = str(seed_dir / "title_map.csv")
+ddr_courses_file = str(seed_dir / "ddr_courses.txt")
+life4_courses_file = str(seed_dir / "life4_courses.txt")
 
 
 log_folder = Path("./log")

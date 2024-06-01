@@ -18,9 +18,9 @@ def loadSongs(songs: list[dict]) -> None:
 
     for title in titles:
         # for path in folder.glob("*/"):
-        folders = glob.glob(str(env.seed_folder) + "/*/" + glob.escape(title))
+        folders = glob.glob(str(env.seed_dir) + "/*/" + glob.escape(title))
         if not folders:
-            env.logger.error(f"{title} not found in {env.seed_folder}")
+            env.logger.error(f"{title} not found in {env.seed_dir}")
             raise RuntimeError
 
         if len(folders) > 1:
@@ -46,7 +46,7 @@ def addChartData(songs: list) -> None:
     """
     for song in songs:
         simfile_path = (
-            env.seed_folder
+            env.seed_dir
             / song["version"]
             / song["name"]
             / (song["name"] + (".ssc" if song["ssc"] else ".sm"))
@@ -77,17 +77,17 @@ def main():
 if __name__ == "__main__":
     if "-l" in sys.argv:
         env.logger.info("Reading data from json file")
-        files = glob.glob(str(env.dist_songs_folder / "*.json"))
+        files = glob.glob(str(env.build_songs_dir / "*.json"))
         songs = [utils.readJson(file) for file in files]
-        summary = utils.readJson(str(env.dist_summaries_folder / "summary.json"))
+        summary = utils.readJson(str(env.build_summaries_dir / "summary.json"))
         songs_version = utils.readJson(
-            str(env.dist_summaries_folder / "songs_version.json")
+            str(env.build_summaries_dir / "songs_version.json")
         )
         songs_level_sp = utils.readJson(
-            str(env.dist_summaries_folder / "songs_level_sp.json")
+            str(env.build_summaries_dir / "songs_level_sp.json")
         )
         songs_level_dp = utils.readJson(
-            str(env.dist_summaries_folder / "songs_level_dp.json")
+            str(env.build_summaries_dir / "songs_level_dp.json")
         )
 
     else:
