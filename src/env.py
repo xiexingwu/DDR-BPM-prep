@@ -22,7 +22,7 @@ for folder in [
 seed_folder = Path("./data")
 allsongs_file = str(seed_folder / "all_songs.txt")
 removed_file = str(seed_folder / "removed.txt")
-name_map_file = str(seed_folder / "name_map.csv")
+title_map_file = str(seed_folder / "title_map.csv")
 ddr_courses_file = str(seed_folder / "ddr_courses.txt")
 life4_courses_file = str(seed_folder / "life4_courses.txt")
 
