@@ -4,7 +4,9 @@ Runs on Python 3.11.4 on MacOS M1.
 
 ### System dependencies
 - python-tk
-    - `brew install python-tk`
+    ```shell
+    brew install python-tk
+    ```
 - ICU
     - MacOS instructions
     ```shell
@@ -15,8 +17,11 @@ Runs on Python 3.11.4 on MacOS M1.
     export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/homebrew/opt/icu4c/lib/pkgconfig
     ```
 - ImageMagick (pre-deployment)
-    - `brew install imagemagick` (may also need `brew install ghostscript`)
-    - https://imagemagick.org/script/download.php
+    ```shell
+    # See https://imagemagick.org/script/download.php
+    # may also need ghostscript: brew install ghostscript
+    brew install python-tk
+    ```
 
 ### Python dependencies
 ```shell
@@ -25,6 +30,7 @@ poetry install
 
 ## Folder structure & Workflow
 Rely on `Makefile` targets imported from `Makefiles/*.mk` for the 3 main steps of the workflow:
+
 1. Scraper
 
     Scrape the DDR simfiles from ZiV and unpack them to the seed folder (`./data/`).
