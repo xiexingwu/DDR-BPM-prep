@@ -26,14 +26,17 @@ poetry install
 ## Folder structure & Workflow
 Rely on `Makefile` targets imported from `Makefiles/*.mk` for the 3 main steps of the workflow:
 1. Scraper
+
     Scrape the DDR simfiles from ZiV and unpack them to the seed folder (`./data/`).
     Misc. fixes are applied to the simfiles at this stage to make it easier for later stages.
 
 2. Parser
+
     This is the set of python scripts that does most of the heavy lifting.
     Simfiles are parsed and summarised into various formats for convenience.
 
 3. Deploy
+
     This stage focuses on building the remaining artefacts and deploying them.
     At the moment, deployment just means pushing the build artefacts to GH, 
     though this may change in the future if it becomes sufficiently inconvenient.
