@@ -5,36 +5,6 @@ from pathlib import Path
 from functools import reduce
 
 
-def copyRawsToDist(songs: list[dict]) -> None:
-    """
-    Copy simfiles & jackets to dist folder
-    """
-    import subprocess
-
-    # copy resources, i.e. jackets and simfiles
-    for song in songs:
-
-        # Copy simfiles
-        src = (
-            Path(env.seed_dir)
-            / song["version"]
-            / song["name"]
-            / (song["name"] + (".ssc" if song["ssc"] else ".sm"))
-        )
-        dst = env.build_simfiles_dir / src.name
-        subprocess.Popen(["cp", "-f", str(src.absolute()), str(dst.absolute())])
-
-        # Copy Jackets
-        src = (
-            Path(env.seed_dir)
-            / song["version"]
-            / song["name"]
-            / (song["name"] + "-jacket.png")
-        )
-        dst = env.build_jackets_dir / src.name
-        subprocess.Popen(["cp", "-f", str(src.absolute()), str(dst.absolute())])
-
-
 def writeSongsToDist(songs):
     for song in songs:
         fname = song["name"] + ".json"

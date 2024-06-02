@@ -98,8 +98,6 @@ if __name__ == "__main__":
     ):
         build.writeSummaryToDist(songs)
         env.logger.info("Finished writing songs summary")
-        build.copyRawsToDist(songs)
-        env.logger.info("Finished copying resources")
 
     if "-i" in sys.argv:
         from ptpython.repl import embed

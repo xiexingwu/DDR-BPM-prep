@@ -1,6 +1,7 @@
 
-lowres:
-	bash ./bin/lowres.sh
+predeploy:
+	bash $(PROJ_DIR)/scripts/deploy/predeploy.sh
+
 
 # deploy: lowres
 # 	git push
