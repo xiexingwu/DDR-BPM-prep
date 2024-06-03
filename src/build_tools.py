@@ -68,6 +68,11 @@ def writeSummaryToDist(songs):
         "1st",
     ]
 
+    # Summary by name - do 1st so later summaries are secondary sorted by name
+    songs_name = utils.sortSongsByTitle(summary)
+    summary = [song for song in sum((songs for songs in songs_name.values()), start=[])]
+
+    # Summary by version
     songs_version = {
         v: list(filter(lambda s: s["version"] == v, summary)) for v in versions
     }
@@ -81,13 +86,9 @@ def writeSummaryToDist(songs):
     songs_level_dp = {
         l: list(filter(lambda s: l in s["dp"].values(), summary)) for l in levels_dp
     }
-    # Summary by name (see https://gist.github.com/ssut/4efb8870e8b5e9c07792)
-    songs_name = utils.sortSongsByTitle(summary)
 
     utils.writeJson(summary, str(env.build_summaries_dir / "summary.json"))
-    utils.writeJson(
-        songs_version, str(env.build_summaries_dir / "songs_version.json")
-    )
+    utils.writeJson(songs_version, str(env.build_summaries_dir / "songs_version.json"))
     utils.writeJson(
         songs_level_sp, str(env.build_summaries_dir / "songs_level_sp.json")
     )

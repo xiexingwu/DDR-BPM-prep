@@ -80,6 +80,9 @@ if __name__ == "__main__":
         files = glob.glob(str(env.build_songs_dir / "*.json"))
         songs = [utils.readJson(file) for file in files]
         summary = utils.readJson(str(env.build_summaries_dir / "summary.json"))
+        songs_name = utils.readJson(
+            str(env.build_summaries_dir / "songs_name.json")
+        )
         songs_version = utils.readJson(
             str(env.build_summaries_dir / "songs_version.json")
         )
