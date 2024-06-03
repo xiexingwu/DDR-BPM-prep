@@ -1,7 +1,7 @@
 #!/bin/bash
 SEED_DIR=${SEED_DIR:-./data}
 
-if  [ $# -ne 1 ]
+if  [ $# -ne 2 ]
 then
 	echo "Input the pack id (contained in the URL as the categoryid, example : https://zenius-i-vanisher.com/v5.2/viewsimfilecategory.php?categoryid=34)";
     exit 1;
@@ -25,4 +25,4 @@ if test -e "$file"
 then zflag=(-z "$file")
 else zflag=()
 fi
-curl -L -J $uri -o $file ${zflag[@]}
+curl -L -J "$uri" -o "$file" ${zflag[@]}
