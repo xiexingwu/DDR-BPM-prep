@@ -1,5 +1,5 @@
 
-main: check_songs
+parse: check_songs
 	$(info ################################################################################)
 	$(info # Once finished, run `make load` to inspect the variable `songs`)
 	$(info ################################################################################)

@@ -55,7 +55,7 @@ make full_scrape
 
 ### Process and write data
 ```shell
-make main
+make parse
 ```
 
 ### Load data to inspect
@@ -63,7 +63,8 @@ make main
 make load
 ```
 
-### Build for deployment
+### Build assets for deployment
+Currently this only involves downscaling jackets.
 ```shell
 make predeploy
 ```
