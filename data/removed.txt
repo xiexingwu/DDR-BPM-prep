@@ -29,17 +29,20 @@ BOYS (EURO MIX)
 BRIGHT STREAM
 BROKEN MY HEART
 BURNIN' THE FLOOR (MOMO MIX)
+BUTTERFLY (20th Anniversary Mix)
 BYE BYE BABY BALLOON
 Baby's Tears
 Baby's Tears (SKY GIRLS opening theme)
 Be your wings
 Beautiful Life
+Believe
 Big Girls Don't Cry
 Bonafied Lovin'
 Boom Boom Dollar (Red Monster Mix)
 Boom! Boom! Miracle Emotion
 Boys
 Boys (2008 X-edit)
+Break Free
 Brilliant R.E.D
 Burn Baby Burn
 Burst The Gravity
@@ -51,6 +54,7 @@ CAN'T TAKE MY EYES OFF YOU (70'S Remix)
 CAPTAIN JACK (GRANDALE REMIX)
 CAPTAIN JACK (GRANDALE REMIX)
 CAPTIVE
+CARTOON HEROES (20th Anniversary Mix)
 CARTOON HEROES (Speedy Mix)
 CENTERFOLD(130BPM move it remix)
 COME CLEAN
@@ -82,6 +86,7 @@ DYNAMITE RAVE-super euro version-
 DanDanDO(The true MAN's Road)
 Do It Right
 Do It Right(Harmonized 2Step Mix)
+Dokusenyoku
 Dong! Dong!
 Drivin'
 EAT YOU UP
@@ -121,6 +126,7 @@ Ghetto Blasta Deluxe
 Groove
 Groove 2001
 HAPPY kitakata
+HAVE YOU NEVER BEEN MELLOW (20th Anniversary Mix)
 HAVE YOU NEVER BEEN MELLOW (MM GROOVIN MIX)
 HERO
 HERO
@@ -133,15 +139,21 @@ HOT LIMIT
 HOW TO PLAY
 HOW TO PLAY (English)
 HYPNOTIC CRISIS
+Happy
 Have You Never Been Mellow
 HeartLatte
 Heavy Rotation
+Hello, planet
 Here It Goes Again
 Hide-away
+Hillbilly Shoes
+Houkago stride
 Hunting for you
 I Believe In Miracles (The Lisa Marie Experience Radio Edit)
 I DO I DO I DO
+I Want You To Know
 I Was The One
+I believe what you said
 I'M FOR REAL
 I'M IN THE MOOD FOR DANCING
 I'll Make Love To You
@@ -173,6 +185,7 @@ Keep On Liftin'
 Kind Lady
 Kiraijanaino
 Knock Out Regrets
+Koi
 Koko Soko
 Kusare gedou to chocolate
 LA BAMBA
@@ -185,6 +198,7 @@ LITTLE BOY (BOY ON BOY MIX)
 LIVING IN AMERICA
 LONG TRAIN RUNNIN'
 LONG TRAIN RUNNIN'
+LONG TRAIN RUNNIN' (20th Anniversary Mix)
 LOOK AT US (Daddy DJ Remix)
 LOVE & JOY
 LOVE & JOY -Risk Junk MIX-
@@ -236,7 +250,10 @@ Memeshikute
 Mermaid
 Mickey Mouse March(Eurobeat Version)
 Midnite Blaze
+More One Night
 Morning Glory
+Mousou kanshou daishou renmei
+Mousou zei
 Mr.T. (take me higher)
 Mugen
 My Favorite Things
@@ -248,6 +265,9 @@ NIJIIRO (Chinese)
 NO LIMIT (RM Remix)
 NORI NORI NORI
 NOTHING GONNA STOP (Dance Mania Mix)
+Nadame sukashi Negotiation
+No Tears Left to Cry
+Nou shou sakuretsu girl
 ODORU PONPOKOLIN
 OH NICK PLEASE NOT SO QUICK
 ON THE JAZZ
@@ -266,21 +286,30 @@ PEACE(^^)v
 PINK DINOSAUR
 PORIRIZUMU
 PUT YOUR FAITH IN ME (DA's Twinkly Disco Remix)
+Play Hard
 Put 'Em Up
 RIGHT NOW
 ROCK BEAT
 ROMANCE NO KAMISAMA
 Radical Faith
 Rairara
+Ranker killer girl
 Reach Up
+Realize
+Reiwa
 Remember You
 Rinnetensei
+Roki (Megumi Ogata)
+Rokuchounen to ichiya monogatari
 SAINT GOES MARCHING (REMIX)
 SEKAI HA ODORU
 SENORITA(Speedy Mix)
 SEXY PLANET(FROM NONSTOP MEGAMIX)
 SHAKE YOUR BOOTY
+SHINY DAYS
 SHOOTING STAR
+SKY HIGH (20th Anniversary Mix)
+SLoWMoTIoN
 SO DEEP (PERFECT SPHERE REMIX)
 SO FABULOUS SO FIERCE (FREAK OUT)
 SO MANY MEN
@@ -294,14 +323,18 @@ SUNRISE(JASON NEVINS REMIX)
 SUPER EUROBEAT (GOLD MIX)
 SURRENDER(YOUR LOVE)
 SWING IT
+Seize The Day
 Share My Love
+Shisouhan
 Shunkan I LOVE YOU
+Shut Up and Dance
 Silent Hill (3rd christmas mix)
 Skyclad no kansokusha
 Smoke
 Spin the disc
 Strobe Girl
 Suki Melo
+Sukina koto dakede ii desu
 Super Driver
 Swingin'
 TELEPHONE OPERATOR (Club MIX)
@@ -327,6 +360,7 @@ The Light
 Tiger rampage
 Till the lonely's gone
 Time After Time
+Time Of Our Lives
 Tohoku EVOLVED (TYPE2)
 Tohoku EVOLVED (TYPE3)
 Tohoku EVOLVED (TYPE4)
@@ -348,6 +382,7 @@ WITCH DOCTOR (GIANTS TOONS VERSION)
 WONDERLAND (UKS MIX)
 WOOKIE WOOKIE
 WWW.BLONDE GIRL (MOMO MIX)
+Wake Me Up
 We Come Alive
 We are Charinko Angels
 We've Got To Make It Tonight
@@ -361,9 +396,11 @@ Xmix5 (Overcrush)
 YELLOW CANDY
 YOZORA NO MUKO
 You're Not Here
+Youkoso Japari Park e
 Young Forever
 Your Rain(RAGE MIX)
 ZERO
+Zassou tamashii namen na yo!
 butterfly (UPSWING MIX)
 data/5th songs in folder but not in list
 e-motion
@@ -381,13 +418,3 @@ resonance
 stomp to my beat
 true...(Trance Sunrise Mix)
 true...(radio edit)
-Shisouhan
-Roki (Megumi Ogata)
-Mousou zei
-Mousou kanshou daishou renmei
-Houkago stride
-Nou shou sakuretsu girl
-Dokusenyoku
-Ranker killer girl
-Reiwa
-Rokuchounen to ichiya monogatari

@@ -15,4 +15,5 @@ clean:
 	rm -fv log/*.txt || [ $$? -eq 1 ]
 
 clobber: clean
-	rm -fv data/**/*.zip
+	rm -fv data/**/*.zip || [ $$? -eq 1 ]
+	rm -fv build/**/*.json || [ $$? -eq 1 ]
