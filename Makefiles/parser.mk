@@ -5,7 +5,7 @@ parse: check_songs
 	$(info ################################################################################)
 	poetry run python $(SRC_DIR)/parse_courses.py
 	poetry run python $(SRC_DIR)/parse_simfiles.py
-	# poetry run python -m ipdb -c continue src/parse_simfiles.py
+	# poetry run python -m ipdb -c continue $(SRC_DIR)/parse_simfiles.py
 
 # check for duplicates, missing songs, etc.
 check_songs: clean

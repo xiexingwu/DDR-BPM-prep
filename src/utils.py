@@ -98,10 +98,10 @@ def sortSongsByTitle(songs):
         jp_partitioned[pos].append(title)
 
     # Apply partionining to songs via index (JP first, then EN)
-    result = {
-        char: list(map(lambda title: songs[title[1]], partitioned))
+    result = [
+        {"category": char, "songs": list(map(lambda title: songs[title[1]], partitioned))}
         for char, partitioned in zip(
             chain(jp_alphabet, en_alphabet), chain(jp_partitioned, en_partitioned)
         )
-    }
+    ]
     return result

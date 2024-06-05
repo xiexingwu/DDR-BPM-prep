@@ -70,22 +70,30 @@ def writeSummaryToDist(songs):
 
     # Summary by name - do 1st so later summaries are secondary sorted by name
     songs_name = utils.sortSongsByTitle(summary)
-    summary = [song for song in sum((songs for songs in songs_name.values()), start=[])]
+    summary = [
+        song
+        for song in sum((songs_char["songs"] for songs_char in songs_name), start=[])
+    ]
 
     # Summary by version
-    songs_version = {
-        v: list(filter(lambda s: s["version"] == v, summary)) for v in versions
-    }
+    songs_version = [
+        {"category": v, "songs": list(filter(lambda s: s["version"] == v, summary))}
+        for v in versions
+    ]
     # Summary by level sp
     levels_sp = list(range(1, 20))
-    songs_level_sp = {
-        l: list(filter(lambda s: l in s["sp"].values(), summary)) for l in levels_sp
-    }
+    songs_level_sp = [
+        {"category": l, "songs": list(filter(lambda s: l in s["sp"].values(), summary))}
+        for l in levels_sp
+    ]
     # Summary by level dp
     levels_dp = list(range(2, 20))
-    songs_level_dp = {
-        l: list(filter(lambda s: l in s["dp"].values(), summary)) for l in levels_dp
-    }
+    songs_level_dp = [
+        {"category": l, "songs": list(filter(lambda s: l in s["dp"].values(), summary))}
+        for l in levels_dp
+    ]
+
+    # Convert dicts to arrays since JSON is technically unordered
 
     utils.writeJson(summary, str(env.build_summaries_dir / "summary.json"))
     utils.writeJson(songs_version, str(env.build_summaries_dir / "songs_version.json"))
