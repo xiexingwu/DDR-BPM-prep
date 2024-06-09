@@ -17,7 +17,6 @@ def loadSongs(songs: list[dict]) -> None:
         titles = list(map(lambda line: line.strip(), file))
 
     for title in titles:
-        # for path in folder.glob("*/"):
         folders = glob.glob(str(env.seed_dir) + "/*/" + glob.escape(title))
         if not folders:
             env.logger.error(f"{title} not found in {env.seed_dir}")
@@ -29,12 +28,7 @@ def loadSongs(songs: list[dict]) -> None:
                 env.logger.warning(f"\t{folder}")
 
         path = Path(folders.pop())
-        # path.name should == song
         res = SimfileRes(path)
-
-        # skip duplicate title (e.g. La bamba, Happy, ever snow)
-        if res.name in map(lambda d: d["name"], songs):
-            continue
 
         song = {"ssc": res.ssc, "version": path.parent.name, "name": path.name}
         songs.append(song)
@@ -80,9 +74,7 @@ if __name__ == "__main__":
         files = glob.glob(str(env.build_songs_dir / "*.json"))
         songs = [utils.readJson(file) for file in files]
         summary = utils.readJson(str(env.build_summaries_dir / "summary.json"))
-        songs_name = utils.readJson(
-            str(env.build_summaries_dir / "songs_name.json")
-        )
+        songs_name = utils.readJson(str(env.build_summaries_dir / "songs_name.json"))
         songs_version = utils.readJson(
             str(env.build_summaries_dir / "songs_version.json")
         )
@@ -92,7 +84,6 @@ if __name__ == "__main__":
         songs_level_dp = utils.readJson(
             str(env.build_summaries_dir / "songs_level_dp.json")
         )
-
     else:
         songs = main()
 
@@ -103,23 +94,7 @@ if __name__ == "__main__":
         env.logger.info("Finished writing songs summary")
 
     if "-i" in sys.argv:
+        from utils import locSong
         from ptpython.repl import embed
-
-        # Utility func
-        def locSong(songs, title):
-            """
-            Search for a song by name and get its index.
-            If the name is not an exact match, returns indices of all songs containing the substring
-            """
-            out = []
-            src = title.lower()
-            for i, d in enumerate(songs):
-                tgt1 = d["title"].lower()
-                tgt2 = d["titletranslit"].lower()
-                if src == tgt1 or src == tgt2:
-                    return [i]
-                if src in tgt1 or src in tgt2:
-                    out.append(i)
-            return out
 
         sys.exit(embed(globals(), locals()))

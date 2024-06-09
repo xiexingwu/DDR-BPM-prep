@@ -8,6 +8,22 @@ import romkan
 from unihandecode import Unihandecoder
 
 
+def locSong(summary, title, *, key="title"):
+    """
+    Search for a song by key (default titletranslit) and get its index.
+    If the name is not an exact match, returns indices of all songs containing the substring
+    """
+    out = []
+    src = title.lower()
+    for i, d in enumerate(summary):
+        tgt = d[key].lower()
+        if src == tgt:
+            return [i]
+        if src in tgt:
+            out.append(i)
+    return out
+
+
 def writeJson(d, fname) -> None:
     with open(fname, "w") as file:
         json.dump(d, file)
@@ -72,7 +88,8 @@ def sortSongsByTitle(songs):
     )
 
     en_partitioned = [
-        list(filter(lambda title: title[0][0] == c, en_sorted)) for c in en_alphabet
+        list(filter(lambda title: title[0][0].upper() == c, en_sorted))
+        for c in en_alphabet
     ]
 
     # Translate Japanese to hiragana
@@ -99,7 +116,10 @@ def sortSongsByTitle(songs):
 
     # Apply partionining to songs via index (JP first, then EN)
     result = [
-        {"category": char, "songs": list(map(lambda title: songs[title[1]], partitioned))}
+        {
+            "category": char,
+            "songs": list(map(lambda title: songs[title[1]], partitioned)),
+        }
         for char, partitioned in zip(
             chain(jp_alphabet, en_alphabet), chain(jp_partitioned, en_partitioned)
         )
