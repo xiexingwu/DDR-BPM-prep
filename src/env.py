@@ -24,6 +24,8 @@ seed_dir = Path(getenv("SEED_DIR") or "./data")
 allsongs_file = str(seed_dir / "all_songs.txt")
 removed_file = str(seed_dir / "removed.txt")
 title_map_file = str(seed_dir / "title_map.csv")
+dansp_courses_file = str(seed_dir / "dansp_courses.txt")
+dandp_courses_file = str(seed_dir / "dandp_courses.txt")
 ddr_courses_file = str(seed_dir / "ddr_courses.txt")
 life4_courses_file = str(seed_dir / "life4_courses.txt")
 

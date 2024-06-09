@@ -70,6 +70,7 @@ def writeSummaryToDist(songs):
 
     # Summary by name - do 1st so later summaries are secondary sorted by name
     songs_name = utils.sortSongsByTitle(summary)
+    assert len(summary) == sum(len(partition['songs']) for partition in songs_name)
     summary = [
         song
         for song in sum((songs_char["songs"] for songs_char in songs_name), start=[])

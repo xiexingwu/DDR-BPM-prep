@@ -1,11 +1,14 @@
 
-parse: check_songs
+parse: check_songs songs courses
 	$(info ################################################################################)
 	$(info # Once finished, run `make load` to inspect the variable `songs`)
 	$(info ################################################################################)
-	poetry run python $(SRC_DIR)/parse_courses.py
+
+songs:
 	poetry run python $(SRC_DIR)/parse_simfiles.py
-	# poetry run python -m ipdb -c continue $(SRC_DIR)/parse_simfiles.py
+
+courses:
+	poetry run python $(SRC_DIR)/parse_courses.py
 
 # check for duplicates, missing songs, etc.
 check_songs: clean
