@@ -8,7 +8,7 @@ D Juuniseiza no seiiki
 D siberite
 E Show me your moves
 
-E This Beat Is.....
+E This Beat Is
 D Starlight in the Snow
 E Stay 4 Ever
 D Astrogazer
@@ -48,7 +48,7 @@ C HyperTwist
 C Neutrino
 C PARANOiA Revolution
 
-C Lachryma (Re:Queen’M)
+C Lachryma (Re-Queen'M)
 C Over The Period
 C Valkyrie dimension
 C ENDYMION

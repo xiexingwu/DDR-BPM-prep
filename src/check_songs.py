@@ -6,6 +6,7 @@ import env
 
 from pathlib import Path
 import glob
+from itertools import chain
 from collections import Counter
 
 INDENT = "\n\t"
@@ -83,14 +84,14 @@ def _checkRemoved(lines: list[str]):
         raise RuntimeError("Invalid song_list configuration")
 
     # check for folders that are suspected recently removed songs
-    for folder in glob.glob(str(env.seed_dir / "*")):
+    for ver_path in glob.glob(str(env.seed_dir / "*")):
         # only search within folders (not .zip)
-        if Path(folder).is_file():
+        if Path(ver_path).is_file():
             continue
 
         removed = []
-        dirs = glob.glob(folder + "/*")
-        for dir in dirs:
+        song_path = chain(glob.glob(ver_path + "/*"), glob.glob(ver_path + "/.*"))
+        for dir in song_path:
             # only check folders (not .png)
             if Path(dir).is_file():
                 continue
@@ -102,12 +103,12 @@ def _checkRemoved(lines: list[str]):
         # write suspects
         if removed:
             logger.info(
-                f"{folder} - Suspected songs that are removed:"
+                f"{ver_path} - Suspected songs that are removed:"
                 + INDENT
                 + INDENT.join(removed)
             )
         else:
-            logger.info(f"{folder} - No songs suspected as removed")
+            logger.info(f"{ver_path} - No songs suspected as removed")
 
 
 def main():

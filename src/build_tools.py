@@ -4,6 +4,11 @@ import utils
 from pathlib import Path
 from functools import reduce
 
+def writeCourseToDist(course, name):
+    fname = f"{name}.json"
+    env.logger.debug(f"Writing {fname}")
+    utils.writeJson(course, str(env.build_courses_dir / fname))
+
 
 def writeSongsToDist(songs):
     for song in songs:

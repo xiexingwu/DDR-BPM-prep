@@ -1,5 +1,6 @@
 import env
 import utils
+from build_tools import writeCourseToDist
 
 
 def parseSongNameWithDiff(line):
@@ -49,6 +50,7 @@ def parseCourseFile(filename: str) -> dict:
             else:
                 chunks.append(chunk)
                 chunk = []
+        chunks.append(chunk)  # last course
 
     return chunks
 
@@ -82,21 +84,34 @@ def main():
     ddr = [parseDdrCourse(chunk) for chunk in parseCourseFile(env.ddr_courses_file)]
     l4 = [parseLife4Course(chunk) for chunk in parseCourseFile(env.life4_courses_file)]
 
-    sp = fillCourseInfo(sp, summary)
-    dp = fillCourseInfo(sp, summary, isSp=False)
-    ddr = fillCourseInfo(sp, summary)
-    l4 = fillCourseInfo(sp, summary)
+    fillCourseInfo(sp, summary)
+    fillCourseInfo(dp, summary, isSp=False)
+    fillCourseInfo(ddr, summary)
+    fillCourseInfo(l4, summary)
+
+    dan_names = [
+        "1st Dan (初段)",
+        "2nd Dan (二段)",
+        "3rd Dan (三段)",
+        "4th Dan (四段)",
+        "5th Dan (五段)",
+        "6th Dan (六段)",
+        "7th Dan (七段)",
+        "8th Dan (八段)",
+        "9th Dan (九段)",
+        "10th Dan (十段)",
+        "Kaiden (皆伝)",
+    ]
+    for i, name in enumerate(dan_names):
+        sp[i].update({"name": name})
+        dp[i].update({"name": name})
+
+    writeCourseToDist(sp, "dan_sp")
+    writeCourseToDist(dp, "dan_dp")
+    writeCourseToDist(ddr, "ddr")
+    writeCourseToDist(l4, "life4")
     return sp, dp, ddr, l4
 
 
 if __name__ == "__main__":
-    try:
-        sp, dp, ddr, l4 = main()
-    except:
-        import ipdb
-        import traceback
-        import sys
-
-        extype, value, tb = sys.exc_info()
-        traceback.print_exc()
-        ipdb.post_mortem(tb)
+    sp, dp, ddr, l4 = main()
