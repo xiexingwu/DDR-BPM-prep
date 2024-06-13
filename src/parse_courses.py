@@ -55,7 +55,8 @@ def parseCourseFile(filename: str) -> dict:
     return chunks
 
 
-def fillCourseInfo(courses, summary, isSp: bool = True):
+def fillCourseInfo(courses, summary, spDp: str | None = None):
+    assert spDp is None or spDp in ("sp", "dp")
     for course in courses:
         for song in course["songs"]:
             env.logger.info(f"Searching for {song['name']}")
@@ -64,12 +65,16 @@ def fillCourseInfo(courses, summary, isSp: bool = True):
             # title info
             song["title"] = smry["title"]
 
-            # level info
-            spDp = "sp" if isSp else "dp"
-            song["level"] = {spDp: smry[spDp]}
-            if "diff" in song.keys():
-                diff = song["diff"]
-                song["level"] = {diff: smry[spDp][diff]}
+            # level - fill sp/dp
+            for sd in ("sp", "dp"):
+                if spDp is not None and spDp != sd:
+                    continue
+
+                if "diff" in song.keys():
+                    diff = song["diff"]
+                    song[sd] = {diff: smry[spDp][diff]}
+                else:
+                    song[sd] = smry[sd]
 
             # bpm
             song["bpm_range"] = smry["bpm_range"]
@@ -84,10 +89,10 @@ def main():
     ddr = [parseDdrCourse(chunk) for chunk in parseCourseFile(env.ddr_courses_file)]
     l4 = [parseLife4Course(chunk) for chunk in parseCourseFile(env.life4_courses_file)]
 
-    fillCourseInfo(sp, summary)
-    fillCourseInfo(dp, summary, isSp=False)
-    fillCourseInfo(ddr, summary)
-    fillCourseInfo(l4, summary)
+    fillCourseInfo(sp, summary, spDp="sp")
+    fillCourseInfo(dp, summary, spDp="dp")
+    fillCourseInfo(ddr, summary, spDp=None)
+    fillCourseInfo(l4, summary, spDp="sp")
 
     dan_names = [
         "1st Dan (初段)",
