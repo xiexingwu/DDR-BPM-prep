@@ -12,14 +12,16 @@ def parseSongNameWithDiff(line):
     return {"diff": diff, "name": name}
 
 
-def parseDanCourse(chunk):
+def parseDanCourse(chunk, spDp : str):
     """Format:
     Course Name
     D Song Name
     E Song Name
     C Song Name
     """
+    assert spDp is None or spDp in ("sp", "dp")
     return {
+        "spDp": spDp,
         "songs": [parseSongNameWithDiff(line) for line in chunk],
     }
 
@@ -35,6 +37,7 @@ def parseLife4Course(chunk):
     return {
         "name": chunk[0],
         "level": int(chunk[1]),
+        "spDp": "sp",
         "songs": [parseSongNameWithDiff(line) for line in chunk[2:]],
     }
 
@@ -84,8 +87,8 @@ def main():
 
     summary = utils.readJson(str(env.build_summaries_dir / "summary.json"))
 
-    sp = [parseDanCourse(chunk) for chunk in parseCourseFile(env.dansp_courses_file)]
-    dp = [parseDanCourse(chunk) for chunk in parseCourseFile(env.dandp_courses_file)]
+    sp = [parseDanCourse(chunk, spDp="sp") for chunk in parseCourseFile(env.dansp_courses_file)]
+    dp = [parseDanCourse(chunk, spDp="dp") for chunk in parseCourseFile(env.dandp_courses_file)]
     ddr = [parseDdrCourse(chunk) for chunk in parseCourseFile(env.ddr_courses_file)]
     l4 = [parseLife4Course(chunk) for chunk in parseCourseFile(env.life4_courses_file)]
 
