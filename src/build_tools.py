@@ -4,6 +4,7 @@ import utils
 from pathlib import Path
 from functools import reduce
 
+
 def writeCourseToDist(course, name):
     fname = f"{name}.json"
     env.logger.debug(f"Writing {fname}")
@@ -25,10 +26,20 @@ def writeSummaryToDist(songs):
 
     def summarise(song):
         def summariseBpms(charts):
-            bpms = [chart["bpm_range"].split("~") for chart in charts]
+            def summariseChartBpm(chart):
+                if "~" in chart["bpm_range"]:
+                    return [int(bpm) for bpm in chart["bpm_range"].split("~")]
+                else:
+                    return [int(chart["bpm_range"]) for _ in range(3)]
+
+            from statistics import mode
+
+            bpms = [summariseChartBpm(chart) for chart in charts]
+
             min_bpm = reduce(min, [int(bpm[0]) for bpm in bpms])
-            max_bpm = reduce(max, [int(bpm[-1]) for bpm in bpms])
-            return [min_bpm] if min_bpm == max_bpm else [min_bpm, max_bpm]
+            dom_bpm = mode(int(bpm[1]) for bpm in bpms)
+            max_bpm = reduce(max, [int(bpm[2]) for bpm in bpms])
+            return [min_bpm] if min_bpm == max_bpm else [min_bpm, dom_bpm, max_bpm]
 
         def summariseLevels(levels):
             map = {
@@ -40,7 +51,7 @@ def writeSummaryToDist(songs):
             }
             return {map[d]: levels[d] for d in map.keys() if d in levels.keys()}
 
-        return {
+        summary = {
             "name": song["name"],
             "title": song["title"],
             "version": song["version"],
@@ -48,6 +59,10 @@ def writeSummaryToDist(songs):
             "dp": summariseLevels(song["dp"]),
             "bpm_range": summariseBpms(song["charts"]),
         }
+        if len(song["charts"]) > 1:
+            summary.update({"per_chart": True})
+
+        return summary
 
     summary = [summarise(song) for song in songs]
     # Summary by version
@@ -75,7 +90,7 @@ def writeSummaryToDist(songs):
 
     # Summary by name - do 1st so later summaries are secondary sorted by name
     songs_name = utils.sortSongsByTitle(summary)
-    assert len(summary) == sum(len(partition['songs']) for partition in songs_name)
+    assert len(summary) == sum(len(partition["songs"]) for partition in songs_name)
     summary = [
         song
         for song in sum((songs_char["songs"] for songs_char in songs_name), start=[])

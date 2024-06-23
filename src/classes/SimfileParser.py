@@ -181,7 +181,8 @@ class SimfileParser:
         bpms = self.cleanBPM(bpms)
 
         d = {}
-        d["dominant_bpm"], dominant_dur = self.dominantBPM(bpms)
+        dominant_bpm, dominant_dur = self.dominantBPM(bpms)
+        d["dominant_bpm"] = dominant_bpm
 
         # Get actual min/max bpm, actual meaning the bpm must last a significant amount of duration
         # true_min/max is instantaneous min/max bpm
@@ -197,7 +198,9 @@ class SimfileParser:
             if val > _max:
                 _max = val
 
-        d["bpm_range"] = f"{_min}~{_max}" if _min != _max else f"{_min}"
+        d["bpm_range"] = (
+            f"{_min}~{dominant_bpm}~{_max}" if _min != _max else f"{_min}"
+        )
         d["bpms"] = bpms
         return d
 
