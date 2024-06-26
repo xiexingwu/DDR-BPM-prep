@@ -2,6 +2,7 @@
 full_scrape: scrape_packs unzip scrape_songs dedupe fix 
 
 scrape_packs:
+	bash $(PROJ_DIR)/scripts/scrape/zenius_pack.sh 1709 WORLD
 	bash $(PROJ_DIR)/scripts/scrape/zenius_pack.sh 1509 A3
 	bash $(PROJ_DIR)/scripts/scrape/zenius_pack.sh 1293 "A20 PLUS"
 	bash $(PROJ_DIR)/scripts/scrape/zenius_pack.sh 1292 A20
