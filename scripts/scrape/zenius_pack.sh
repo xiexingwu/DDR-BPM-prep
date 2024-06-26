@@ -13,7 +13,7 @@ fi
 mkdir -p $SEED_DIR
 cd $SEED_DIR
 
-file=${ver}.zip
+file="${ver}.zip"
 uri=$(curl https://zenius-i-vanisher.com/v5.2/viewsimfilecategory.php?categoryid=$id | 
 grep 'class="fb"' | grep 'download.php?' | sed -nE 's/.*href="([^"]+).*/https\:\/\/zenius\-i\-vanisher\.com\/v5\.2\/\1/p' |
 sed -ne 's/amp;//p')
