@@ -8,6 +8,14 @@ import romkan
 from unihandecode import Unihandecoder
 
 
+def where(val, arr):
+    """
+    For a sorted array arr, returns the index of the last element greater than val.
+    where(3,[1,2,4]) should return 1
+    """
+    return sum(val >= e for e in arr) - 1
+
+
 def locSong(summary, title, *, key="title"):
     """
     Search for a song by key (default titletranslit) and get its index.
@@ -109,7 +117,7 @@ def sortSongsByTitle(songs):
     jp_alphabet = "あかさたなはまやらわ"
     jp_partitioned = [[] for kana in jp_alphabet]
     for title in jp_sorted:
-        pos = sum(title[0][0] >= kana for kana in jp_alphabet) - 1
+        pos = where(title[0][0], jp_alphabet)
         assert pos >= 0
         assert pos < len(jp_alphabet)
         jp_partitioned[pos].append(title)

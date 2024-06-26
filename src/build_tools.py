@@ -1,8 +1,8 @@
 import env
 import utils
 
-from pathlib import Path
 from functools import reduce
+from collections import Counter
 
 
 def writeCourseToDist(course, name):
@@ -24,17 +24,25 @@ def writeSummaryToDist(songs):
     Use as an index to filter/sort/categorise songs.
     """
 
-    def summarise(song):
-        def summariseBpms(charts):
-            def summariseChartBpm(chart):
-                if "~" in chart["bpm_range"]:
-                    return [int(bpm) for bpm in chart["bpm_range"].split("~")]
-                else:
-                    return [int(chart["bpm_range"]) for _ in range(3)]
+    with open(env.per_chart_bpm_file, "r") as f:
+        title_bpm = list(map(lambda line: line.strip(), f))
+        per_chart_bpm_range = {tb.split(",")[0]: tb.split(",")[1] for tb in title_bpm}
 
+    def summarise(song):
+        def parseChartBpm(chart):
+            if (
+                sum(isinstance(bpm, int) for bpm in chart["bpm_range"]) == 3
+            ):  # array of 3 int
+                return chart["bpm_range"]
+            elif "~" in chart["bpm_range"]:
+                return [int(bpm) for bpm in chart["bpm_range"].split("~")]
+            else:
+                return [int(chart["bpm_range"]) for _ in range(3)]
+
+        def summariseBpms(charts):
             from statistics import mode
 
-            bpms = [summariseChartBpm(chart) for chart in charts]
+            bpms = [parseChartBpm(chart) for chart in charts]
 
             min_bpm = reduce(min, [int(bpm[0]) for bpm in bpms])
             dom_bpm = mode(int(bpm[1]) for bpm in bpms)
@@ -51,7 +59,7 @@ def writeSummaryToDist(songs):
             }
             return {map[d]: levels[d] for d in map.keys() if d in levels.keys()}
 
-        summary = {
+        song_summary = {
             "name": song["name"],
             "title": song["title"],
             "version": song["version"],
@@ -59,10 +67,19 @@ def writeSummaryToDist(songs):
             "dp": summariseLevels(song["dp"]),
             "bpm_range": summariseBpms(song["charts"]),
         }
-        if len(song["charts"]) > 1:
-            summary.update({"per_chart": True})
 
-        return summary
+        if len(song["charts"]) == 5:
+            assert song["name"] in per_chart_bpm_range
+            i_diff = "bBDEC".index(per_chart_bpm_range[song["name"]])
+            bpm_range = song["charts"][i_diff]["bpm_range"]
+
+            song["per_chart"] = "".join(
+                diff
+                for chart, diff in zip(song["charts"], "bBDEC")
+                if chart["bpm_range"] != bpm_range
+            )
+
+        return song_summary
 
     summary = [summarise(song) for song in songs]
     # Summary by version

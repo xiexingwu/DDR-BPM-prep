@@ -199,7 +199,7 @@ class SimfileParser:
                 _max = val
 
         d["bpm_range"] = (
-            f"{_min}~{dominant_bpm}~{_max}" if _min != _max else f"{_min}"
+            f"{d['true_min']}~{dominant_bpm}~{d['true_max']}" if _min != _max else f"{dominant_bpm}"
         )
         d["bpms"] = bpms
         return d
