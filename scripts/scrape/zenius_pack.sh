@@ -10,19 +10,17 @@ else
 	ver=$2;
 fi
 
-mkdir -p $SEED_DIR
-cd $SEED_DIR
+mkdir -p "$SEED_DIR"
+cd "$SEED_DIR" || exit
 
-file="${ver}.zip"
-uri="$(curl https://zenius-i-vanisher.com/v5.2/viewsimfilecategory.php?categoryid=$id | 
+file=${ver}.zip
+uri=$(curl https://zenius-i-vanisher.com/v5.2/viewsimfilecategory.php?categoryid="$id" | 
 grep 'class="fb"' | grep 'download.php?' | sed -nE 's/.*href="([^"]+).*/https\:\/\/zenius\-i\-vanisher\.com\/v5\.2\/\1/p' |
-sed -ne 's/amp;//p')"
+sed -ne 's/amp;//p')
 
-echo $uri
-echo downloading to $file
 
 if test -e "$file"
 then zflag=(-z "$file")
 else zflag=()
 fi
-curl -L -J "$uri" -o "$file" ${zflag[@]}
+curl -L -J "$uri" -o "$file" "${zflag[@]}"
