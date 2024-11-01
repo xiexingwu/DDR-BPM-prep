@@ -27,4 +27,4 @@ load:
 
 # perform various file fixes
 fix:
-	bash $(PROJ_DIR)/scripts/scrape/fix.sh 
+	bash $(PROJ_DIR)/scripts/parse/fix.sh 

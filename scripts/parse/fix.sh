@@ -21,9 +21,11 @@ fix_takemehigher(){
     if [[ -d "$path/$old_name" ]]; then
         echo renaming "$path/$old_name" to "$path/$new_name"
         cd "$path"
-        mv "$old_name" "$new_name"
+        rm -rf "$new_name"
+        mkdir -p "$new_name"
+        cp -R "$old_name"/ "$new_name"/
         cd "$new_name"
-        rename "s/$old_name/$new_name/" * && echo "done"
+        rename -v "s/$old_name/$new_name/" *.* && echo "done";
     fi
 }
 
