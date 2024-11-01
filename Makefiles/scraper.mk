@@ -1,5 +1,5 @@
 
-full_scrape: scrape_packs unzip scrape_songs dedupe fix 
+full_scrape: scrape_packs unzip scrape_songs dedupe
 
 scrape_packs:
 	bash $(PROJ_DIR)/scripts/scrape/zenius_pack.sh 1709 WORLD
@@ -40,8 +40,3 @@ dedupe:
 
 unzip:
 	bash $(PROJ_DIR)/scripts/scrape/unzip_pack.sh
-
-# perform various file fixes
-fix:
-	bash $(PROJ_DIR)/scripts/scrape/fix.sh 
-

@@ -1,5 +1,4 @@
-
-parse: check_songs songs courses
+parse: check_songs songs courses fix
 	$(info ################################################################################)
 	$(info # Once finished, run `make load` to inspect the variable `songs`)
 	$(info ################################################################################)
@@ -25,3 +24,7 @@ write:
 # load data to inspect
 load:
 	poetry run python $(SRC_DIR)/parse_simfiles.py -l -i
+
+# perform various file fixes
+fix:
+	bash $(PROJ_DIR)/scripts/scrape/fix.sh 
