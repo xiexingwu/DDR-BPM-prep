@@ -1,4 +1,4 @@
-parse: check_songs songs courses fix
+parse: check_songs songs courses
 	$(info ################################################################################)
 	$(info # Once finished, run `make load` to inspect the variable `songs`)
 	$(info ################################################################################)
@@ -10,7 +10,7 @@ courses:
 	poetry run python $(SRC_DIR)/parse_courses.py
 
 # check for duplicates, missing songs, etc.
-check_songs: clean
+check_songs: fix clean
 	$(info ################################################################################)
 	$(info # 1. Make sure all_songs.txt has ending new line)
 	$(info # 2. Make sure you ran a full scrape: make full_scrape)
