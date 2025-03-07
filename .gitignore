@@ -4,6 +4,8 @@ __pycache__
 data/*.zip
 data/*/
 
+build/
+
 log/*.txt
 
 .DS_Store

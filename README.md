@@ -20,7 +20,7 @@ Runs on Python 3.11.4 on MacOS M1.
     ```shell
     # See https://imagemagick.org/script/download.php
     # may also need ghostscript: brew install ghostscript
-    brew install python-tk
+    brew install imagemagick
     ```
 
 ### Python dependencies
