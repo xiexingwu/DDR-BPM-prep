@@ -74,6 +74,7 @@ class SimfileParser:
 
     def isPerChart(self):
         # per_chart if any chart has its own BPM/stops data
+        # most songs (.sm) will have BPM/stops as part of the simfile
         for chart in self.charts:
             if hasattr(chart, "stops") or hasattr(chart, "bpms"):
                 return True

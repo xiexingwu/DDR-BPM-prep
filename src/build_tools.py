@@ -4,6 +4,7 @@ import utils
 from functools import reduce
 from collections import Counter
 
+from typing import Any
 
 def writeCourseToDist(course, name):
     fname = f"{name}.json"
@@ -18,72 +19,16 @@ def writeSongsToDist(songs):
         utils.writeJson(song, str(env.build_songs_dir / fname))
 
 
-def writeSummaryToDist(songs):
+def writeSummaryToDist(songs: Any):
     """
     Write basic info of all songs into a single file.
     Use as an index to filter/sort/categorise songs.
     """
 
-    with open(env.per_chart_bpm_file, "r") as f:
-        title_bpm = list(map(lambda line: line.strip(), f))
-        per_chart_bpm_range = {tb.split(",")[0]: tb.split(",")[1] for tb in title_bpm}
-
-    def summarise(song):
-        def parseChartBpm(chart):
-            if (
-                sum(isinstance(bpm, int) for bpm in chart["bpm_range"]) == 3
-            ):  # array of 3 int
-                return chart["bpm_range"]
-            elif "~" in chart["bpm_range"]:
-                return [int(bpm) for bpm in chart["bpm_range"].split("~")]
-            else:
-                return [int(chart["bpm_range"]) for _ in range(3)]
-
-        def summariseBpms(charts):
-            from statistics import mode
-
-            bpms = [parseChartBpm(chart) for chart in charts]
-
-            min_bpm = reduce(min, [int(bpm[0]) for bpm in bpms])
-            dom_bpm = mode(int(bpm[1]) for bpm in bpms)
-            max_bpm = reduce(max, [int(bpm[2]) for bpm in bpms])
-            return [min_bpm] if min_bpm == max_bpm else [min_bpm, dom_bpm, max_bpm]
-
-        def summariseLevels(levels):
-            map = {
-                "beginner": "b",
-                "easy": "B",
-                "medium": "D",
-                "hard": "E",
-                "challenge": "C",
-            }
-            return {map[d]: levels[d] for d in map.keys() if d in levels.keys()}
-
-        song_summary = {
-            "name": song["name"],
-            "title": song["title"],
-            "version": song["version"],
-            "sp": summariseLevels(song["sp"]),
-            "dp": summariseLevels(song["dp"]),
-            "bpm_range": summariseBpms(song["charts"]),
-        }
-
-        if len(song["charts"]) == 5:
-            assert song["name"] in per_chart_bpm_range
-            i_diff = "bBDEC".index(per_chart_bpm_range[song["name"]])
-            bpm_range = song["charts"][i_diff]["bpm_range"]
-
-            song["per_chart"] = "".join(
-                diff
-                for chart, diff in zip(song["charts"], "bBDEC")
-                if chart["bpm_range"] != bpm_range
-            )
-
-        return song_summary
-
-    summary = [summarise(song) for song in songs]
+    summary = [summariseSong(song) for song in songs]
     # Summary by version
     versions = [
+        "WORLD",
         "A3",
         "A20 PLUS",
         "A20",
@@ -142,3 +87,46 @@ def writeSummaryToDist(songs):
         songs_level_dp, str(env.build_summaries_dir / "songs_level_dp.json")
     )
     utils.writeJson(songs_name, str(env.build_summaries_dir / "songs_name.json"))
+
+
+def summariseSong(song):
+    def parseChartBpm(chart):
+        if (
+            sum(isinstance(bpm, int) for bpm in chart["bpm_range"]) == 3
+        ):  # array of 3 int
+            return chart["bpm_range"]
+        elif "~" in chart["bpm_range"]:
+            return [int(bpm) for bpm in chart["bpm_range"].split("~")]
+        else:
+            return [int(chart["bpm_range"]) for _ in range(3)]
+
+    def summariseBpms(charts):
+        from statistics import mode
+
+        bpms = [parseChartBpm(chart) for chart in charts]
+
+        min_bpm = reduce(min, [int(bpm[0]) for bpm in bpms])
+        dom_bpm = mode(int(bpm[1]) for bpm in bpms)
+        max_bpm = reduce(max, [int(bpm[2]) for bpm in bpms])
+        return [min_bpm] if min_bpm == max_bpm else [min_bpm, dom_bpm, max_bpm]
+
+    def summariseLevels(levels):
+        map = {
+            "beginner": "b",
+            "easy": "B",
+            "medium": "D",
+            "hard": "E",
+            "challenge": "C",
+        }
+        return {map[d]: levels[d] for d in map.keys() if d in levels.keys()}
+
+    song_summary = {
+        "name": song["name"],
+        "title": song["title"],
+        "version": song["version"],
+        "sp": summariseLevels(song["sp"]),
+        "dp": summariseLevels(song["dp"]),
+        "bpm_range": summariseBpms(song["charts"]),
+    }
+
+    return song_summary
