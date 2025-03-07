@@ -11,6 +11,8 @@ include Makefiles/deploy.mk
 # Run after scraping (parse & downscale jackets)
 main: clobber parse predeploy
 
+release:
+	bash $(PROJ_DIR)/scripts/deploy/release.sh
 ################################################################################
 # CLEAN
 ################################################################################
