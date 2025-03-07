@@ -27,11 +27,12 @@ class SimfileRes:
         if filename.exists():
             return filename
         else:
-            Path("")
+            env.logger.info(f"Failed to find {filename}")
+            return Path()
 
     def findSimfile(self, foldername: Path) -> Path:
         path = self.findFile(foldername / (self.name + ".sm"))
-        if not path:
+        if path == Path():
             path = self.findFile(foldername / (self.name + ".ssc"))
         return path
 
