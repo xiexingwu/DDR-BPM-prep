@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 SEED_DIR=${SEED_DIR:-./data}
 
 fix_deltamax(){
@@ -21,11 +23,12 @@ fix_takemehigher(){
     if [[ -d "$path/$old_name" ]]; then
         echo renaming "$path/$old_name" to "$path/$new_name"
         cd "$path"
-        rm -rf "$new_name"
+        rm -vrf "$new_name"
         mkdir -p "$new_name"
         cp -R "$old_name"/ "$new_name"/
         cd "$new_name"
         rename -v "s/$old_name/$new_name/" *.* && echo "done";
+        rm -vrf "$path/$old_name"
     fi
 }
 
